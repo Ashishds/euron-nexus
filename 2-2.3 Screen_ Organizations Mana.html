@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizations Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>::-webkit-scrollbar { display: none;}</style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#0A66C2',
+                        'hover-blue': '#004182',
+                        'bg-surface': '#F3F6F8',
+                        'card-surface': '#FFFFFF',
+                        'border-color': '#E5E7EB',
+                        'primary-text': '#111827',
+                        'secondary-text': '#6B7280',
+                        'success': '#057642',
+                        'warning': '#B45309',
+                        'error': '#B91C1C',
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-inter antialiased bg-bg-surface">
+
+<div id="organizations-page" class="flex h-screen w-screen overflow-hidden">
+    
+    <aside id="sidebar" class="w-64 bg-card-surface border-r border-border-color flex flex-col">
+        <div id="sidebar-header" class="h-16 border-b border-border-color flex items-center px-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-primary-blue rounded-lg flex items-center justify-center">
+                    <i class="fa-solid fa-shield-halved text-white text-sm"></i>
+                </div>
+                <div>
+                    <div class="text-primary-text text-sm font-bold">Euron</div>
+                    <div class="text-secondary-text text-xs">Super Admin</div>
+                </div>
+            </div>
+        </div>
+        
+        <nav id="sidebar-nav" class="flex-1 overflow-y-auto py-6 px-3">
+            <div class="space-y-1">
+                <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                    <i class="fa-solid fa-chart-line text-base w-5"></i>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-primary-blue bg-opacity-10 text-primary-blue transition-all duration-150">
+                    <i class="fa-solid fa-building text-base w-5"></i>
+                    <span class="text-sm font-semibold">Organizations</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                    <i class="fa-solid fa-users text-base w-5"></i>
+                    <span class="text-sm font-medium">Users</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                    <i class="fa-solid fa-gauge-high text-base w-5"></i>
+                    <span class="text-sm font-medium">Quotas</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                    <i class="fa-solid fa-credit-card text-base w-5"></i>
+                    <span class="text-sm font-medium">Billing</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                    <i class="fa-solid fa-puzzle-piece text-base w-5"></i>
+                    <span class="text-sm font-medium">Features</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                    <i class="fa-solid fa-server text-base w-5"></i>
+                    <span class="text-sm font-medium">System Health</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                    <i class="fa-solid fa-clock-rotate-left text-base w-5"></i>
+                    <span class="text-sm font-medium">Activity Log</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                    <i class="fa-solid fa-gear text-base w-5"></i>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </div>
+        </nav>
+        
+        <div id="sidebar-footer" class="border-t border-border-color p-4">
+            <div class="flex items-center space-x-3 mb-4">
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Admin" class="w-10 h-10 rounded-full">
+                <div class="flex-1 min-w-0">
+                    <div class="text-sm font-semibold text-primary-text truncate">John Anderson</div>
+                    <div class="text-xs text-secondary-text truncate">Super Admin</div>
+                </div>
+            </div>
+            <button class="w-full h-9 bg-transparent text-error text-sm font-medium border border-error rounded-full hover:bg-error hover:bg-opacity-10 transition-all duration-150 flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+    
+    <main id="main-content" class="flex-1 flex flex-col overflow-hidden">
+        
+        <header id="header" class="h-16 bg-card-surface border-b border-border-color flex items-center justify-between px-8">
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-building text-primary-blue text-xl"></i>
+                    <div>
+                        <h1 class="text-primary-text text-lg font-bold">Organizations</h1>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <button class="w-10 h-10 rounded-lg hover:bg-bg-surface flex items-center justify-center text-secondary-text hover:text-primary-text transition-all duration-150 relative">
+                        <i class="fa-solid fa-bell text-lg"></i>
+                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
+                    </button>
+                </div>
+                <div class="relative">
+                    <button class="w-10 h-10 rounded-lg hover:bg-bg-surface flex items-center justify-center text-secondary-text hover:text-primary-text transition-all duration-150">
+                        <i class="fa-solid fa-circle-question text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <div id="page-content" class="flex-1 overflow-y-auto">
+            <div class="p-8">
+                
+                <div id="page-header-section" class="mb-8">
+                    <div class="flex items-start justify-between mb-6">
+                        <div>
+                            <h1 class="text-primary-text text-3xl font-bold mb-2">Organizations</h1>
+                            <p class="text-secondary-text text-base">Manage all client organizations</p>
+                        </div>
+                        <button class="h-10 px-6 bg-primary-blue text-white text-sm font-semibold rounded-full hover:bg-hover-blue transition-all duration-150 shadow-sm hover:shadow-md flex items-center space-x-2">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                            <span>Add Organization</span>
+                        </button>
+                    </div>
+                    
+                    <div id="stats-cards" class="grid grid-cols-5 gap-6 mb-8">
+                        <div class="bg-card-surface border border-border-color rounded-lg p-5">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-building text-primary-blue text-lg"></i>
+                                </div>
+                                <span class="text-xs text-success font-semibold">+12%</span>
+                            </div>
+                            <div class="text-2xl font-bold text-primary-text mb-1">1,247</div>
+                            <div class="text-xs text-secondary-text">Total Organizations</div>
+                        </div>
+                        
+                        <div class="bg-card-surface border border-border-color rounded-lg p-5">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-circle-check text-success text-lg"></i>
+                                </div>
+                                <span class="text-xs text-success font-semibold">+8%</span>
+                            </div>
+                            <div class="text-2xl font-bold text-primary-text mb-1">1,089</div>
+                            <div class="text-xs text-secondary-text">Active</div>
+                        </div>
+                        
+                        <div class="bg-card-surface border border-border-color rounded-lg p-5">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-flask text-warning text-lg"></i>
+                                </div>
+                                <span class="text-xs text-warning font-semibold">+24</span>
+                            </div>
+                            <div class="text-2xl font-bold text-primary-text mb-1">87</div>
+                            <div class="text-xs text-secondary-text">Trial</div>
+                        </div>
+                        
+                        <div class="bg-card-surface border border-border-color rounded-lg p-5">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-pause-circle text-error text-lg"></i>
+                                </div>
+                                <span class="text-xs text-error font-semibold">+3</span>
+                            </div>
+                            <div class="text-2xl font-bold text-primary-text mb-1">52</div>
+                            <div class="text-xs text-secondary-text">Suspended</div>
+                        </div>
+                        
+                        <div class="bg-card-surface border border-border-color rounded-lg p-5">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-user-slash text-secondary-text text-lg"></i>
+                                </div>
+                                <span class="text-xs text-secondary-text font-semibold">-2%</span>
+                            </div>
+                            <div class="text-2xl font-bold text-primary-text mb-1">19</div>
+                            <div class="text-xs text-secondary-text">Churned</div>
+                        </div>
+                    </div>
+                    
+                    <div id="filters-section" class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <button class="h-9 px-4 bg-primary-blue text-white text-sm font-semibold rounded-full transition-all duration-150">
+                                All
+                            </button>
+                            <button class="h-9 px-4 bg-transparent text-secondary-text text-sm font-medium rounded-full hover:bg-bg-surface transition-all duration-150">
+                                Active
+                            </button>
+                            <button class="h-9 px-4 bg-transparent text-secondary-text text-sm font-medium rounded-full hover:bg-bg-surface transition-all duration-150">
+                                Trial
+                            </button>
+                            <button class="h-9 px-4 bg-transparent text-secondary-text text-sm font-medium rounded-full hover:bg-bg-surface transition-all duration-150">
+                                Suspended
+                            </button>
+                            <button class="h-9 px-4 bg-transparent text-secondary-text text-sm font-medium rounded-full hover:bg-bg-surface transition-all duration-150">
+                                Churned
+                            </button>
+                        </div>
+                        
+                        <div class="flex items-center space-x-3">
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fa-solid fa-search text-secondary-text text-sm"></i>
+                                </div>
+                                <input 
+                                    type="text" 
+                                    class="w-80 h-10 bg-card-surface border border-border-color rounded-lg pl-10 pr-4 text-sm text-primary-text placeholder-secondary-text focus:outline-none focus:border-primary-blue focus:ring-3 focus:ring-primary-blue focus:ring-opacity-10 transition-all duration-150"
+                                    placeholder="Search organizations..."
+                                />
+                            </div>
+                            <button class="h-10 px-4 bg-card-surface border border-border-color text-secondary-text text-sm font-medium rounded-lg hover:bg-bg-surface transition-all duration-150 flex items-center space-x-2">
+                                <i class="fa-solid fa-filter text-sm"></i>
+                                <span>Filters</span>
+                            </button>
+                            <button class="h-10 px-4 bg-card-surface border border-border-color text-secondary-text text-sm font-medium rounded-lg hover:bg-bg-surface transition-all duration-150 flex items-center space-x-2">
+                                <i class="fa-solid fa-download text-sm"></i>
+                                <span>Export</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="organizations-table-section" class="bg-card-surface border border-border-color rounded-lg overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-bg-surface border-b border-border-color">
+                                    <th class="text-left px-6 py-4 text-xs font-semibold text-secondary-text uppercase tracking-wider w-1/4">
+                                        <div class="flex items-center space-x-2 cursor-pointer hover:text-primary-text transition-colors duration-150">
+                                            <span>Organization</span>
+                                            <i class="fa-solid fa-sort text-xs"></i>
+                                        </div>
+                                    </th>
+                                    <th class="text-left px-6 py-4 text-xs font-semibold text-secondary-text uppercase tracking-wider" style="width: 12%;">
+                                        <div class="flex items-center space-x-2 cursor-pointer hover:text-primary-text transition-colors duration-150">
+                                            <span>Plan</span>
+                                            <i class="fa-solid fa-sort text-xs"></i>
+                                        </div>
+                                    </th>
+                                    <th class="text-left px-6 py-4 text-xs font-semibold text-secondary-text uppercase tracking-wider" style="width: 10%;">
+                                        <div class="flex items-center space-x-2 cursor-pointer hover:text-primary-text transition-colors duration-150">
+                                            <span>Status</span>
+                                            <i class="fa-solid fa-sort text-xs"></i>
+                                        </div>
+                                    </th>
+                                    <th class="text-left px-6 py-4 text-xs font-semibold text-secondary-text uppercase tracking-wider" style="width: 10%;">
+                                        <div class="flex items-center space-x-2 cursor-pointer hover:text-primary-text transition-colors duration-150">
+                                            <span>Users</span>
+                                            <i class="fa-solid fa-sort text-xs"></i>
+                                        </div>
+                                    </th>
+                                    <th class="text-left px-6 py-4 text-xs font-semibold text-secondary-text uppercase tracking-wider" style="width: 12%;">
+                                        <div class="flex items-center space-x-2 cursor-pointer hover:text-primary-text transition-colors duration-150">
+                                            <span>Interviews (MTD)</span>
+                                            <i class="fa-solid fa-sort text-xs"></i>
+                                        </div>
+                                    </th>
+                                    <th class="text-left px-6 py-4 text-xs font-semibold text-secondary-text uppercase tracking-wider" style="width: 12%;">
+                                        <div class="flex items-center space-x-2 cursor-pointer hover:text-primary-text transition-colors duration-150">
+                                            <span>MRR</span>
+                                            <i class="fa-solid fa-sort text-xs"></i>
+                                        </div>
+                                    </th>
+                                    <th class="text-left px-6 py-4 text-xs font-semibold text-secondary-text uppercase tracking-wider" style="width: 10%;">
+                                        <div class="flex items-center space-x-2 cursor-pointer hover:text-primary-text transition-colors duration-150">
+                                            <span>Created</span>
+                                            <i class="fa-solid fa-sort text-xs"></i>
+                                        </div>
+                                    </th>
+                                    <th class="text-center px-6 py-4 text-xs font-semibold text-secondary-text uppercase tracking-wider" style="width: 9%;">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-border-color">
+                                <tr class="bg-white hover:bg-bg-surface transition-colors duration-150 cursor-pointer" style="height: 64px;">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                                                TC
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-sm font-semibold text-primary-text truncate">TechCorp Solutions</div>
+                                                <div class="text-xs text-secondary-text truncate">techcorp.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">Enterprise</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-2 h-2 bg-success rounded-full"></div>
+                                            <span class="text-sm text-primary-text font-medium">Active</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <div class="text-sm font-semibold text-primary-text mb-1">47/50</div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-primary-blue h-1.5 rounded-full" style="width: 94%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm font-semibold text-primary-text">1,247</span>
+                                            <i class="fa-solid fa-arrow-up text-success text-xs"></i>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm font-semibold text-primary-text">$2,499</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-secondary-text">Jan 15, 2023</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex justify-center">
+                                            <button class="w-8 h-8 rounded-lg hover:bg-gray-200 flex items-center justify-center text-secondary-text hover:text-primary-text transition-all duration-150" onclick="toggleMenu(event, 'menu-1')">
+                                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="bg-gray-50 hover:bg-bg-surface transition-colors duration-150 cursor-pointer" style="height: 64px;">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                                                GI
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-sm font-semibold text-primary-text truncate">Global Innovations Inc</div>
+                                                <div class="text-xs text-secondary-text truncate">globalinnovations.io</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Growth</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-2 h-2 bg-success rounded-full"></div>
+                                            <span class="text-sm text-primary-text font-medium">Active</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <div class="text-sm font-semibold text-primary-text mb-1">18/25</div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-primary-blue h-1.5 rounded-full" style="width: 72%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm font-semibold text-primary-text">892</span>
+                                            <i class="fa-solid fa-arrow-up text-success text-xs"></i>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm font-semibold text-primary-text">$999</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-secondary-text">Mar 22, 2023</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex justify-center">
+                                            <button class="w-8 h-8 rounded-lg hover:bg-gray-200 flex items-center justify-center text-secondary-text hover:text-primary-text transition-all duration-150" onclick="toggleMenu(event, 'menu-2')">
+                                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="bg-white hover:bg-bg-surface transition-colors duration-150 cursor-pointer" style="height: 64px;">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                                                DS
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-sm font-semibold text-primary-text truncate">DataSync Pro</div>
+                                                <div class="text-xs text-secondary-text truncate">datasync.pro</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 text-sky-800">Startup</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-2 h-2 bg-warning rounded-full"></div>
+                                            <span class="text-sm text-primary-text font-medium">Trial</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <div class="text-sm font-semibold text-primary-text mb-1">5/10</div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-primary-blue h-1.5 rounded-full" style="width: 50%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm font-semibold text-primary-text">124</span>
+                                            <i class="fa-solid fa-arrow-down text-error text-xs"></i>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm font-semibold text-primary-text">$299</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-secondary-text">Nov 08, 2023</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex justify-center">
+                                            <button class="w-8 h-8 rounded-lg hover:bg-gray-200 flex items-center justify-center text-secondary-text hover:text-primary-text transition-all duration-150" onclick="toggleMenu(event, 'menu-3')">
+                                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="bg-gray-50 hover:bg-bg-surface transition-colors duration-150 cursor-pointer" style="height: 64px;">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                                                CS
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-sm font-semibold text-primary-text truncate">CloudScale Systems</div>
+                                                <div class="text-xs text-secondary-text truncate">cloudscale.systems</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">Enterprise</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-2 h-2 bg-success rounded-full"></div>
+                                            <span class="text-sm text-primary-text font-medium">Active</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <div class="text-sm font-semibold text-primary-text mb-1">92/100</div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-primary-blue h-1.5 rounded-full" style="width: 92%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm font-semibold text-primary-text">2,156</span>
+                                            <i class="fa-solid fa-arrow-up text-success text-xs"></i>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm font-semibold text-primary-text">$4,999</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-secondary-text">Aug 03, 2022</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex justify-center">
+                                            <button class="w-8 h-8 rounded-lg hover:bg-gray-200 flex items-center justify-center text-secondary-text hover:text-primary-text transition-all duration-150" onclick="toggleMenu(event, 'menu-4')">
+                                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="bg-white hover:bg-bg-surface transition-colors duration-150 cursor-pointer" style="height: 64px;">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                                                NV
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-sm font-semibold text-primary-text truncate">NextVenture Capital</div>
+                                                <div class="text-xs text-secondary-text truncate">nextventure.vc</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Growth</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-2 h-2 bg-error rounded-full"></div>
+                                            <span class="text-sm text-primary-text font-medium">Suspended</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <div class="text-sm font-semibold text-primary-text mb-1">12/25</div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-error h-1.5 rounded-full" style="width: 48%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm font-semibold text-primary-text">0</span>
+                                            <i class="fa-solid fa-minus text-secondary-text text-xs"></i>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm font-semibold text-primary-text">$999</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-secondary-text">May 19, 2023</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex justify-center">
+                                            <button class="w-8 h-8 rounded-lg hover:bg-gray-200 flex items-center justify-center text-secondary-text hover:text-primary-text transition-all duration-150" onclick="toggleMenu(event, 'menu-5')">
+                                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="bg-gray-50 hover:bg-bg-surface transition-colors duration-150 cursor-pointer" style="height: 64px;">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                                                AD
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-sm font-semibold text-primary-text truncate">Apex Digital Marketing</div>
+                                                <div class="text-xs text-secondary-text truncate">apexdigital.agency</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 text-sky-800">Startup</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-2 h-2 bg-success rounded-full"></div>
+                                            <span class="text-sm text-primary-text font-medium">Active</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <div class="text-sm font-semibold text-primary-text mb-1">8/10</div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-primary-blue h-1.5 rounded-full" style="width: 80%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm font-semibold text-primary-text">356</span>
+                                            <i class="fa-solid fa-arrow-up text-success text-xs"></i>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm font-semibold text-primary-text">$299</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-secondary-text">Sep 14, 2023</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex justify-center">
+                                            <button class="w-8 h-8 rounded-lg hover:bg-gray-200 flex items-center justify-center text-secondary-text hover:text-primary-text transition-all duration-150" onclick="toggleMenu(event, 'menu-6')">
+                                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="bg-white hover:bg-bg-surface transition-colors duration-150 cursor-pointer" style="height: 64px;">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                                                QT
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-sm font-semibold text-primary-text truncate">Quantum Technologies</div>
+                                                <div class="text-xs text-secondary-text truncate">quantum.tech</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Growth</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-2 h-2 bg-success rounded-full"></div>
+                                            <span class="text-sm text-primary-text font-medium">Active</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <div class="text-sm font-semibold text-primary-text mb-1">21/25</div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-primary-blue h-1.5 rounded-full" style="width: 84%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm font-semibold text-primary-text">1,045</span>
+                                            <i class="fa-solid fa-arrow-up text-success text-xs"></i>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm font-semibold text-primary-text">$999</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-secondary-text">Feb 27, 2023</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex justify-center">
+                                            <button class="w-8 h-8 rounded-lg hover:bg-gray-200 flex items-center justify-center text-secondary-text hover:text-primary-text transition-all duration-150" onclick="toggleMenu(event, 'menu-7')">
+                                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="bg-gray-50 hover:bg-bg-surface transition-colors duration-150 cursor-pointer" style="height: 64px;">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-pink-600 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                                                SF
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-sm font-semibold text-primary-text truncate">Stellar Finance Group</div>
+                                                <div class="text-xs text-secondary-text truncate">stellarfinance.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">Enterprise</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-2 h-2 bg-success rounded-full"></div>
+                                            <span class="text-sm text-primary-text font-medium">Active</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <div class="text-sm font-semibold text-primary-text mb-1">67/75</div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-primary-blue h-1.5 rounded-full" style="width: 89%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm font-semibold text-primary-text">1,789</span>
+                                            <i class="fa-solid fa-arrow-up text-success text-xs"></i>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm font-semibold text-primary-text">$3,499</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-secondary-text">Dec 11, 2022</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex justify-center">
+                                            <button class="w-8 h-8 rounded-lg hover:bg-gray-200 flex items-center justify-center text-secondary-text hover:text-primary-text transition-all duration-150" onclick="toggleMenu(event, 'menu-8')">
+                                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="bg-white hover:bg-bg-surface transition-colors duration-150 cursor-pointer" style="height: 64px;">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-cyan-600 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                                                BI
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-sm font-semibold text-primary-text truncate">Bright Ideas Studio</div>
+                                                <div class="text-xs text-secondary-text truncate">brightideas.studio</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 text-sky-800">Startup</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-2 h-2 bg-warning rounded-full"></div>
+                                            <span class="text-sm text-primary-text font-medium">Trial</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <div class="text-sm font-semibold text-primary-text mb-1">3/10</div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-primary-blue h-1.5 rounded-full" style="width: 30%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm font-semibold text-primary-text">78</span>
+                                            <i class="fa-solid fa-arrow-up text-success text-xs"></i>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm font-semibold text-primary-text">$299</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-secondary-text">Oct 30, 2023</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex justify-center">
+                                            <button class="w-8 h-8 rounded-lg hover:bg-gray-200 flex items-center justify-center text-secondary-text hover:text-primary-text transition-all duration-150" onclick="toggleMenu(event, 'menu-9')">
+                                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="bg-gray-50 hover:bg-bg-surface transition-colors duration-150 cursor-pointer" style="height: 64px;">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                                                EC
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-sm font-semibold text-primary-text truncate">EcoTech Consulting</div>
+                                                <div class="text-xs text-secondary-text truncate">ecotech.consulting</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Growth</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-2 h-2 bg-success rounded-full"></div>
+                                            <span class="text-sm text-primary-text font-medium">Active</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <div class="text-sm font-semibold text-primary-text mb-1">15/25</div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-primary-blue h-1.5 rounded-full" style="width: 60%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm font-semibold text-primary-text">634</span>
+                                            <i class="fa-solid fa-arrow-up text-success text-xs"></i>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm font-semibold text-primary-text">$999</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-secondary-text">Apr 05, 2023</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex justify-center">
+                                            <button class="w-8 h-8 rounded-lg hover:bg-gray-200 flex items-center justify-center text-secondary-text hover:text-primary-text transition-all duration-150" onclick="toggleMenu(event, 'menu-10')">
+                                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="table-footer" class="bg-bg-surface border-t border-border-color px-6 py-4 flex items-center justify-between">
+                        <div class="text-sm text-secondary-text">
+                            Showing <span class="font-semibold text-primary-text">1-10</span> of <span class="font-semibold text-primary-text">1,247</span> organizations
+                        </div>
+                        
+                        <div class="flex items-center space-x-2">
+                            <button class="w-8 h-8 rounded-lg border border-border-color bg-card-surface hover:bg-bg-surface text-secondary-text hover:text-primary-text transition-all duration-150 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                <i class="fa-solid fa-chevron-left text-xs"></i>
+                            </button>
+                            <button class="w-8 h-8 rounded-lg bg-primary-blue text-white text-sm font-semibold">1</button>
+                            <button class="w-8 h-8 rounded-lg border border-border-color bg-card-surface hover:bg-bg-surface text-secondary-text hover:text-primary-text transition-all duration-150 text-sm font-medium">2</button>
+                            <button class="w-8 h-8 rounded-lg border border-border-color bg-card-surface hover:bg-bg-surface text-secondary-text hover:text-primary-text transition-all duration-150 text-sm font-medium">3</button>
+                            <span class="text-secondary-text px-2">...</span>
+                            <button class="w-8 h-8 rounded-lg border border-border-color bg-card-surface hover:bg-bg-surface text-secondary-text hover:text-primary-text transition-all duration-150 text-sm font-medium">125</button>
+                            <button class="w-8 h-8 rounded-lg border border-border-color bg-card-surface hover:bg-bg-surface text-secondary-text hover:text-primary-text transition-all duration-150 flex items-center justify-center">
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div id="context-menu" class="hidden fixed bg-card-surface border border-border-color rounded-lg shadow-xl py-2 z-50 min-w-[200px]">
+    <a href="#" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-bg-surface text-primary-text text-sm transition-colors duration-150">
+        <i class="fa-solid fa-eye w-4 text-primary-blue"></i>
+        <span>View Details</span>
+    </a>
+    <a href="#" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-bg-surface text-primary-text text-sm transition-colors duration-150">
+        <i class="fa-solid fa-pen w-4 text-primary-blue"></i>
+        <span>Edit Organization</span>
+    </a>
+    <a href="#" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-bg-surface text-primary-text text-sm transition-colors duration-150">
+        <i class="fa-solid fa-gauge-high w-4 text-primary-blue"></i>
+        <span>Manage Quotas</span>
+    </a>
+    <a href="#" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-bg-surface text-primary-text text-sm transition-colors duration-150">
+        <i class="fa-solid fa-clock-rotate-left w-4 text-primary-blue"></i>
+        <span>View Activity Log</span>
+    </a>
+    <a href="#" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-bg-surface text-primary-text text-sm transition-colors duration-150">
+        <i class="fa-solid fa-user-secret w-4 text-primary-blue"></i>
+        <span>Impersonate Admin</span>
+    </a>
+    <div class="border-t border-border-color my-2"></div>
+    <a href="#" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-bg-surface text-warning text-sm transition-colors duration-150">
+        <i class="fa-solid fa-pause-circle w-4"></i>
+        <span>Suspend Organization</span>
+    </a>
+    <a href="#" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-bg-surface text-error text-sm transition-colors duration-150">
+        <i class="fa-solid fa-trash w-4"></i>
+        <span>Delete Organization</span>
+    </a>
+</div>
+
+<script>
+let currentMenu = null;
+
+function toggleMenu(event, menuId) {
+    event.stopPropagation();
+    const menu = document.getElementById('context-menu');
+    const button = event.currentTarget;
+    const rect = button.getBoundingClientRect();
+    
+    if (currentMenu === menuId && !menu.classList.contains('hidden')) {
+        menu.classList.add('hidden');
+        currentMenu = null;
+        return;
+    }
+    
+    menu.classList.remove('hidden');
+    menu.style.left = (rect.left - 180) + 'px';
+    menu.style.top = (rect.bottom + 5) + 'px';
+    currentMenu = menuId;
+}
+
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById('context-menu');
+    if (!menu.contains(event.target)) {
+        menu.classList.add('hidden');
+        currentMenu = null;
+    }
+});
+</script>
+
+</body>
+</html>

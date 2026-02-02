@@ -1,0 +1,110 @@
+i am build a next gent euron interview system in multi tenenat architeture as saas product where it must be able to take end to end interview startging from job post , job listing , resume filteration based on the job descrtiption and ats score inbuild and it msut be able to allow candidate to schedule the interview in there own time zone as per there availableilty so this is just a idea let me give me a detaield story board about this prodcut basicilly i am build this as saas product where i want an admin pannel to see,monitor , control the quota of and interview and features that will be given to my client in different pricing teir and all the in depth and deaild status i will be able to see starting from client onbording , tehre system activity , and fetures and governnance management for client as well as for my internal company , and even my client must have there own admin dashard board to manager everything , now this product shoud give a feature where client can post a job or client can configure other job posting site via wbhook or api call and it should receive a resume for a perticulatr  job psot now once system will recieve a resume then it should pass resume through an ats system so evalature a resume against a job poste and commpany standsrd and requirements once that is done system shouud send a notificoin in terms of mail to a perticular candidate whihc it have parced from a resume itself and ask candidate to scheudfle and interview , once candidate will schdule an interview my system should go live at that time and start an interview in human way wehre it showuld also do proctering and ask candidate to enable video and audio and even open up a wriup board and round wise not all the question at a time round wise it should start taking a interview in audio and video conversational manner , and like i have mentioned it should behave like a real real interviewer so it should ask a followup questions based on  the current context and answer given by candidate it should even ask a candiadte to write something baseed oin the questions requirements on board that will pop up during the interview and oince interview is over it must be able to do the analaysis of audio and video and pass a feedback to candidate as well as company hr or management and then if candidate is able to cross the thresold of current roiund of interview then system should schedule a next round in the same manner as above if not then pass a transparent feedback to a candidate in a polite manner with a genuine feedback , now system is suppose to log each and every activity that is being done by client , candidate or system itself for observatoin  now preapare a prd docuemnt wehre you have to do a market resaerch with respect to market size , its usases , how it will help out company and even in terms of cost saving , apart from this in a prd doducment that you are going to prepare mention all the features from client side , user interface , and even from a super admin side of euron , even give me a priose estimatoin of this entire system for 100 ,1000 , 10000 concurrent user , even give me teach stack its alrenative , and majoiuyrley try to do a research where you have to give me all the possibgle alternative to build this system from teach side  do you own reeaerch and preapre this full scale prd and if i have missed anything try adding this so that this sytem will be one of the worlds best sytem in this world and remove the enter layer inter terms of taqking an interview try to use AI and agent in all the layer as much as you can so that this sytem wil be less human dependent and in autonomous mode without musch of maintainance it can run with super optimizatoin now give me a full scale prd for this give a name to this prodcut from your side
+
+
+i have a presenetaiont tomorrow for this product in front of my mangement so i have to talk baout this product , market research , scope , revenue , success rate , componay growth with repest to this project now i have to prepare the slieds give me a full data dump that i can use to preapre my slides for my preserntatino whihc should impresss my team and my managerment and they can say  yes for this product derive all the data and give it me only a data and writups not a slide oinly you ahve to give me data in crsip mannner for 20 pager slides
+
+
+ok so now do one thisn for me prepare the enterie screen by scnreren design doducment for all the three sytem superadmin for euron , admin system for my client and user interface for candidate i want a crisp and clearn screen by screne design for all the system in very very detailed manner you are not suppe to create a design by youself you ahve to jsut give me a paeg wise design docuemnt that ic an use to preapre my desing section by sectgion , componenet by componenet step by step and one more thisng adop this theam that i am giving you and alineg the entire prodcut with that theam You are designing a world-class professional SaaS UI for a product called “Euron”.
+The design must feel enterprise-grade, trustworthy, calm, and career-focused,
+similar to LinkedIn’s professional UX (inspired, not copied).
+PRIMARY GOAL
+Create a clean, scalable, professional SaaS interface that works for dashboards,
+profiles, feeds, courses, and enterprise users.
+DESIGN STYLE
+- Professional, neutral, enterprise SaaS
+- Calm, readable, non-flashy
+- Familiar to business and career-focused users
+- Avoid futuristic, neon, playful, or gamified visuals
+COLOR SYSTEM (STRICT)
+- Primary brand color: Professional Blue #0A66C2
+- Hover / active blue: #004182
+- Background: #F3F6F8
+- Card / surface: #FFFFFF
+- Border color: #E5E7EB
+- Primary text: #111827
+- Secondary / muted text: #6B7280
+- Success: #057642
+- Warning: #B45309
+- Error: #B91C1C
+Blue should be the dominant color.
+All other colors must be used sparingly and functionally.
+TYPOGRAPHY (VERY IMPORTANT)
+- Primary font: Inter
+- Font style: clean, neutral, highly readable
+- Headings: 600–700 weight
+- Body text: 400–500 weight
+- No decorative or fancy fonts
+FONT SCALE
+- Page titles: 28–32px
+- Section headers: 20–24px
+- Card titles: 16–18px
+- Body text: 14–16px
+- Captions / meta: 12px
+- Line height: generous (1.4–1.6)
+LAYOUT & STRUCTURE
+- Max content width: 1120–1200px
+- Centered layout
+- Grid-based alignment
+- Common layouts:
+  - Sidebar + main content
+  - Feed-style central column
+- Use whitespace generously
+CARD DESIGN
+- Background: #FFFFFF
+- Border: 1px solid #E5E7EB
+- Border radius: 8px
+- Very minimal or no shadow
+- Cards must feel flat, stable, and professional
+BUTTON SYSTEM
+Primary Button:
+- Background: #0A66C2
+- Text color: #FFFFFF
+- Border radius: 999px (pill style)
+- Font weight: 600
+Secondary Button:
+- Transparent background
+- Border: 1px solid #0A66C2
+- Text color: #0A66C2
+Tertiary Button:
+- Text only
+- Muted gray color
+Avoid aggressive CTA colors.
+FORMS & INPUTS
+- Input height: 40–44px
+- Border: 1px solid #D1D5DB
+- Focus state:
+  - Border color: #0A66C2
+  - Subtle blue glow
+- Labels above inputs
+- Placeholder text in muted gray
+ICONOGRAPHY
+- Use clean, outline icons
+- Stroke-based icons only
+- Neutral color by default
+- Blue only on hover or active state
+INTERACTIONS & MOTION
+- Subtle animations only
+- Hover transitions: 100–150ms
+- No bounce or flashy animations
+- Motion should feel calm and professional
+CONTENT STYLE
+- Text-first design
+- Clear hierarchy
+- Professional tone
+- Avoid emojis inside product UI
+DARK MODE (OPTIONAL)
+If dark mode is included:
+- Background: #0F172A
+- Surface: #020617
+- Text: #E5E7EB
+- Primary blue: #3B82F6
+- Maintain same typography and spacing
+FINAL CONSTRAINTS
+- Do not copy LinkedIn UI directly
+- Follow the professional enterprise SaaS aesthetic
+- Prioritize readability, trust, and scalability
+- Design must work for millions of users
+
+
+
+now for this prd give me a full architecture design doucdment with all the ardhitecture comp[onent and lets say i am going to use aws stack for hosting this entire solution so use all the services from aws and you are free to design on other service from AI side whihc is not avaible in aws sytem and even give me a costing and comparision

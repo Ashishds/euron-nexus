@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Session - Euron Nexus</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#0A66C2',
+                        'hover-blue': '#004182',
+                        'bg-surface': '#F3F6F8',
+                        'card-surface': '#FFFFFF',
+                        'border-color': '#E5E7EB',
+                        'primary-text': '#111827',
+                        'secondary-text': '#6B7280',
+                        'success': '#057642',
+                        'warning': '#B45309',
+                        'error': '#B91C1C',
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .typing-indicator span {
+            animation: blink 1.4s infinite both;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes blink {
+
+            0%,
+            80%,
+            100% {
+                opacity: 0;
+            }
+
+            40% {
+                opacity: 1;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+
+<body class="font-inter antialiased bg-bg-surface min-h-screen">
+    <!-- Header -->
+    <header class="h-16 bg-card-surface border-b border-border-color flex items-center justify-between px-6">
+        <div class="flex items-center space-x-4">
+            <a href="/" class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-primary-blue rounded-lg flex items-center justify-center">
+                    <i class="fa-solid fa-shield-halved text-white text-lg"></i>
+                </div>
+                <div>
+                    <div class="text-primary-text text-lg font-bold leading-none">Euron Nexus</div>
+                    <div class="text-xs text-secondary-text">AI Interview</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2 bg-green-100 px-4 py-2 rounded-full">
+                <div class="w-2 h-2 bg-success rounded-full pulse"></div>
+                <span class="text-sm text-success font-semibold">Interview Active</span>
+            </div>
+            <div id="timer"
+                class="flex items-center space-x-2 bg-bg-surface px-4 py-2 rounded-lg border border-border-color">
+                <i class="fa-solid fa-clock text-secondary-text"></i>
+                <span class="text-sm font-semibold text-primary-text">25:00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex h-[calc(100vh-64px)]">
+        <!-- Left Panel - Video -->
+        <div class="w-1/3 bg-card-surface border-r border-border-color p-6">
+            <div class="h-full flex flex-col">
+                <h3 class="text-lg font-semibold text-primary-text mb-4">Video Feed</h3>
+
+                <!-- Candidate Video -->
+                <div class="relative bg-gray-900 rounded-xl overflow-hidden mb-4 flex-1">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="text-center">
+                            <div
+                                class="w-24 h-24 bg-primary-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fa-solid fa-user text-white text-4xl"></i>
+                            </div>
+                            <p class="text-white text-sm">Camera Preview</p>
+                            <p class="text-gray-400 text-xs mt-1">Click to enable camera</p>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                        <span class="bg-black/50 text-white text-xs px-2 py-1 rounded">You</span>
+                    </div>
+                </div>
+
+                <!-- AI Interviewer Video -->
+                <div class="relative bg-gradient-to-br from-primary-blue to-hover-blue rounded-xl overflow-hidden h-40">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center">
+                            <i class="fa-solid fa-robot text-white text-3xl"></i>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                        <span class="bg-black/50 text-white text-xs px-2 py-1 rounded">AI Interviewer</span>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-2 h-2 bg-success rounded-full pulse"></div>
+                            <span class="text-white text-xs">Speaking</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex items-center justify-center space-x-4 mt-6">
+                    <button id="micBtn"
+                        class="w-12 h-12 bg-success rounded-full flex items-center justify-center hover:bg-success/80 transition-colors">
+                        <i class="fa-solid fa-microphone text-white text-xl"></i>
+                    </button>
+                    <button id="videoBtn"
+                        class="w-12 h-12 bg-primary-blue rounded-full flex items-center justify-center hover:bg-hover-blue transition-colors">
+                        <i class="fa-solid fa-video text-white text-xl"></i>
+                    </button>
+                    <button id="endBtn"
+                        class="w-12 h-12 bg-error rounded-full flex items-center justify-center hover:bg-error/80 transition-colors">
+                        <i class="fa-solid fa-phone-slash text-white text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Chat -->
+        <div class="flex-1 flex flex-col">
+            <!-- Chat Header -->
+            <div class="h-16 bg-card-surface border-b border-border-color flex items-center justify-between px-6">
+                <div>
+                    <h2 class="text-lg font-semibold text-primary-text">Senior Software Developer Interview</h2>
+                    <p class="text-xs text-secondary-text">Round 1 - Technical Assessment</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="px-3 py-1 bg-blue-100 text-primary-blue text-xs font-semibold rounded-full">Question
+                        1/5</span>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-4">
+                <!-- Welcome Message -->
+                <div class="flex items-start space-x-3 fade-in">
+                    <div class="w-10 h-10 bg-primary-blue rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-robot text-white"></i>
+                    </div>
+                    <div class="flex-1 bg-card-surface border border-border-color p-4 rounded-lg max-w-xl">
+                        <p class="text-sm text-primary-text">Hello! Welcome to your interview for the Senior Software
+                            Developer position at TechCorp. I'm your AI interviewer, and I'll be conducting a technical
+                            assessment today.</p>
+                        <p class="text-xs text-secondary-text mt-2">Just now</p>
+                    </div>
+                </div>
+
+                <!-- Question 1 -->
+                <div class="flex items-start space-x-3 fade-in" style="animation-delay: 0.3s;">
+                    <div class="w-10 h-10 bg-primary-blue rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-robot text-white"></i>
+                    </div>
+                    <div class="flex-1 bg-card-surface border border-border-color p-4 rounded-lg max-w-xl">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span
+                                class="px-2 py-0.5 bg-primary-blue/10 text-primary-blue text-xs font-semibold rounded">Question
+                                1</span>
+                        </div>
+                        <p class="text-sm text-primary-text">Let's start with your background. Can you tell me about a
+                            challenging technical project you worked on recently? What was your role, and what
+                            technologies did you use?</p>
+                        <p class="text-xs text-secondary-text mt-2">Just now</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div id="typingIndicator" class="hidden px-6 py-2">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary-blue rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-robot text-white text-sm"></i>
+                    </div>
+                    <div class="bg-card-surface border border-border-color px-4 py-2 rounded-lg">
+                        <div class="typing-indicator flex space-x-1">
+                            <span class="w-2 h-2 bg-secondary-text rounded-full"></span>
+                            <span class="w-2 h-2 bg-secondary-text rounded-full"></span>
+                            <span class="w-2 h-2 bg-secondary-text rounded-full"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="bg-card-surface border-t border-border-color p-4">
+                <div class="flex items-center space-x-3">
+                    <button id="voiceRecordBtn"
+                        class="w-10 h-10 bg-bg-surface border border-border-color rounded-full flex items-center justify-center text-secondary-text hover:text-primary-text hover:bg-gray-200 transition-colors">
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                    <input type="text" id="messageInput"
+                        class="flex-1 h-12 bg-bg-surface border border-border-color rounded-lg px-4 text-sm text-primary-text placeholder-secondary-text focus:outline-none focus:border-primary-blue focus:ring-2 focus:ring-primary-blue/10"
+                        placeholder="Type your response or click the microphone to speak..." />
+                    <button id="sendBtn"
+                        class="h-12 px-6 bg-primary-blue text-white text-sm font-semibold rounded-lg hover:bg-hover-blue transition-colors flex items-center space-x-2">
+                        <span>Send</span>
+                        <i class="fa-solid fa-paper-plane text-xs"></i>
+                    </button>
+                </div>
+                <div class="flex items-center justify-between mt-3">
+                    <div class="flex items-center space-x-4 text-xs text-secondary-text">
+                        <span><i class="fa-solid fa-info-circle mr-1"></i> Speak clearly into your microphone</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button class="text-xs text-secondary-text hover:text-primary-blue">
+                            <i class="fa-solid fa-flag mr-1"></i> Report Issue
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Demo Interview Questions and Follow-ups
+        const interviewFlow = [
+            {
+                question: "That's great to hear about your experience. Can you explain a time when you had to optimize a system for performance? What approach did you take?",
+                label: "Question 2"
+            },
+            {
+                question: "Interesting approach! How do you typically handle code reviews in your team? What do you look for when reviewing someone else's code?",
+                label: "Question 3"
+            },
+            {
+                question: "Now, let's discuss system design. How would you design a scalable notification system that can handle millions of users?",
+                label: "Question 4"
+            },
+            {
+                question: "Excellent explanation! For the final question: What's a technology or framework you've been wanting to learn, and why does it interest you?",
+                label: "Question 5"
+            },
+            {
+                question: "Thank you for your thoughtful responses throughout this interview. You've demonstrated strong technical knowledge and problem-solving skills. We'll be in touch with feedback within 2-3 business days. Good luck!",
+                label: "Complete",
+                isFinal: true
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let timerSeconds = 25 * 60;
+
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const timerEl = document.getElementById('timer').querySelector('span');
+
+        // Timer
+        function updateTimer() {
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            if (timerSeconds > 0) {
+                timerSeconds--;
+                setTimeout(updateTimer, 1000);
+            }
+        }
+        updateTimer();
+
+        // Add message to chat
+        function addMessage(content, isUser = false, label = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex items-start space-x-3 fade-in ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
+
+            const avatar = document.createElement('div');
+            avatar.className = `w-10 h-10 ${isUser ? 'bg-success' : 'bg-primary-blue'} rounded-full flex items-center justify-center flex-shrink-0`;
+            avatar.innerHTML = `<i class="fa-solid ${isUser ? 'fa-user' : 'fa-robot'} text-white"></i>`;
+
+            const bubble = document.createElement('div');
+            bubble.className = `flex-1 ${isUser ? 'bg-primary-blue/10' : 'bg-card-surface border border-border-color'} p-4 rounded-lg max-w-xl`;
+
+            let labelHtml = '';
+            if (label) {
+                labelHtml = `<div class="flex items-center space-x-2 mb-2">
+                    <span class="px-2 py-0.5 ${label === 'Complete' ? 'bg-success/10 text-success' : 'bg-primary-blue/10 text-primary-blue'} text-xs font-semibold rounded">${label}</span>
+                </div>`;
+            }
+
+            bubble.innerHTML = `
+                ${labelHtml}
+                <p class="text-sm text-primary-text">${content}</p>
+                <p class="text-xs text-secondary-text mt-2">Just now</p>
+            `;
+
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(bubble);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Handle sending message
+        function handleSend() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, true);
+            messageInput.value = '';
+
+            // Update question counter
+            const questionCounter = document.querySelector('.bg-blue-100.text-primary-blue');
+            if (questionCounter && currentQuestionIndex < interviewFlow.length - 1) {
+                questionCounter.textContent = `Question ${currentQuestionIndex + 2}/5`;
+            }
+
+            // Show typing indicator
+            typingIndicator.classList.remove('hidden');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Simulate AI response
+            setTimeout(() => {
+                typingIndicator.classList.add('hidden');
+
+                if (currentQuestionIndex < interviewFlow.length) {
+                    const nextItem = interviewFlow[currentQuestionIndex];
+                    addMessage(nextItem.question, false, nextItem.label);
+
+                    if (nextItem.isFinal) {
+                        messageInput.disabled = true;
+                        sendBtn.disabled = true;
+                        messageInput.placeholder = "Interview completed. Thank you for participating!";
+
+                        // Update status
+                        const statusBadge = document.querySelector('.bg-green-100');
+                        if (statusBadge) {
+                            statusBadge.className = 'flex items-center space-x-2 bg-blue-100 px-4 py-2 rounded-full';
+                            statusBadge.innerHTML = '<i class="fa-solid fa-check text-primary-blue"></i><span class="text-sm text-primary-blue font-semibold">Interview Complete</span>';
+                        }
+                    }
+
+                    currentQuestionIndex++;
+                }
+            }, 2000 + Math.random() * 1500);
+        }
+
+        sendBtn.addEventListener('click', handleSend);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSend();
+        });
+
+        // Toggle buttons
+        document.getElementById('micBtn').addEventListener('click', function () {
+            this.classList.toggle('bg-success');
+            this.classList.toggle('bg-error');
+        });
+
+        document.getElementById('videoBtn').addEventListener('click', function () {
+            this.classList.toggle('bg-primary-blue');
+            this.classList.toggle('bg-error');
+        });
+
+        document.getElementById('endBtn').addEventListener('click', function () {
+            if (confirm('Are you sure you want to end this interview?')) {
+                window.location.href = '/candidate';
+            }
+        });
+
+        // Voice record button
+        document.getElementById('voiceRecordBtn').addEventListener('click', function () {
+            this.classList.toggle('bg-error');
+            this.classList.toggle('text-white');
+            const icon = this.querySelector('i');
+            if (this.classList.contains('bg-error')) {
+                icon.classList.remove('fa-microphone');
+                icon.classList.add('fa-stop');
+            } else {
+                icon.classList.add('fa-microphone');
+                icon.classList.remove('fa-stop');
+            }
+        });
+    </script>
+</body>
+
+</html>
