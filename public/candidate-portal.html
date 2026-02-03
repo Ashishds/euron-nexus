@@ -47,7 +47,7 @@
 
 <body class="font-inter antialiased bg-bg-surface min-h-screen">
     <!-- Header -->
-    <header class="h-16 bg-card-surface border-b border-border-color flex items-center justify-between px-8">
+    <header class="h-16 bg-card-surface border-b border-border-color flex items-center justify-between px-4 md:px-8">
         <a href="/" class="flex items-center space-x-3">
             <div class="w-10 h-10 bg-primary-blue rounded-lg flex items-center justify-center">
                 <i class="fa-solid fa-shield-halved text-white text-lg"></i>
@@ -80,15 +80,15 @@
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-8 py-8">
+    <main class="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-8">
         <!-- Welcome Section -->
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-primary-text mb-2">Welcome back, John!</h1>
+            <h1 class="text-2xl md:text-3xl font-bold text-primary-text mb-2">Welcome back, John!</h1>
             <p class="text-secondary-text">Here's an overview of your upcoming interviews and application status.</p>
         </div>
 
         <!-- Stats Cards -->
-        <div class="grid grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
             <div class="bg-card-surface border border-border-color rounded-xl p-6">
                 <div class="flex items-center justify-between mb-4">
                     <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -132,11 +132,11 @@
 
         <!-- Upcoming Interview -->
         <div class="bg-gradient-to-r from-primary-blue to-hover-blue rounded-xl p-6 mb-8 text-white">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between space-y-4 md:space-y-0">
                 <div>
                     <div class="text-sm opacity-80 mb-1">Upcoming Interview</div>
                     <h2 class="text-2xl font-bold mb-2">Senior Software Developer</h2>
-                    <div class="flex items-center space-x-6 text-sm">
+                    <div class="flex flex-wrap items-center gap-3 md:space-x-6 text-sm">
                         <span><i class="fa-solid fa-building mr-2"></i>TechCorp Solutions</span>
                         <span><i class="fa-solid fa-calendar mr-2"></i>Today at 3:00 PM</span>
                         <span><i class="fa-solid fa-clock mr-2"></i>25 minutes</span>
@@ -154,7 +154,7 @@
         </div>
 
         <!-- Two Column Layout -->
-        <div class="grid grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
             <!-- Applications -->
             <div class="bg-card-surface border border-border-color rounded-xl p-6">
                 <div class="flex items-center justify-between mb-6">
