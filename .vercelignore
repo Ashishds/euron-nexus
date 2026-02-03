@@ -1,0 +1,27 @@
+# Vercel Ignore File
+# Exclude dependencies (installed during build)
+node_modules/
+
+# Exclude environment variables (set these in Vercel Dashboard)
+.env
+
+# Exclude uploads and temp files
+uploads/
+tmp/
+*.log
+*.tmp
+
+# Exclude documentation and raw assets
+*.docx
+*.pdf
+README.md
+SETUP_GUIDE.md
+VERCEL_DEPLOYMENT_GUIDE.md
+
+# Exclude dev scripts
+debug_pdf.js
+read_prompt.js
+
+# Exclude git and agent artifacts
+.git/
+.gemini/

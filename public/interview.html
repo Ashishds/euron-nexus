@@ -137,19 +137,24 @@
                 <h3 class="text-lg font-semibold text-primary-text mb-4">Video Feed</h3>
 
                 <!-- Candidate Video -->
-                <div class="relative bg-gray-900 rounded-xl overflow-hidden mb-4 flex-1">
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="text-center">
+                <div class="relative bg-gray-900 rounded-xl overflow-hidden mb-4 flex-1 group">
+                    <video id="localVideo" class="absolute inset-0 w-full h-full object-cover hidden" autoplay
+                        playsinline muted></video>
+                    <div id="cameraPlaceholder" class="absolute inset-0 flex items-center justify-center">
+                        <div class="text-center cursor-pointer" onclick="startCamera()">
                             <div
-                                class="w-24 h-24 bg-primary-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fa-solid fa-user text-white text-4xl"></i>
+                                class="w-24 h-24 bg-primary-blue rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-hover-blue transition-colors">
+                                <i class="fa-solid fa-camera text-white text-4xl"></i>
                             </div>
-                            <p class="text-white text-sm">Camera Preview</p>
-                            <p class="text-gray-400 text-xs mt-1">Click to enable camera</p>
+                            <p class="text-white text-sm">Click to Enable Camera</p>
+                            <p class="text-gray-400 text-xs mt-1">Required for interview</p>
                         </div>
                     </div>
-                    <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                    <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between z-10">
                         <span class="bg-black/50 text-white text-xs px-2 py-1 rounded">You</span>
+                        <div id="micStatus" class="hidden">
+                            <i class="fa-solid fa-microphone text-white text-xs"></i>
+                        </div>
                     </div>
                 </div>
 
@@ -162,7 +167,7 @@
                     </div>
                     <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
                         <span class="bg-black/50 text-white text-xs px-2 py-1 rounded">AI Interviewer</span>
-                        <div class="flex items-center space-x-1">
+                        <div id="aiSpeakingIndicator" class="flex items-center space-x-1 hidden">
                             <div class="w-2 h-2 bg-success rounded-full pulse"></div>
                             <span class="text-white text-xs">Speaking</span>
                         </div>
@@ -192,47 +197,57 @@
             <!-- Chat Header -->
             <div class="h-16 bg-card-surface border-b border-border-color flex items-center justify-between px-6">
                 <div>
-                    <h2 class="text-lg font-semibold text-primary-text">Senior Software Developer Interview</h2>
+                    <h2 id="interviewTitle" class="text-lg font-semibold text-primary-text">AI Technical Interview</h2>
                     <p class="text-xs text-secondary-text">Round 1 - Technical Assessment</p>
                 </div>
-                <div class="flex items-center space-x-2">
-                    <span class="px-3 py-1 bg-blue-100 text-primary-blue text-xs font-semibold rounded-full">Question
-                        1/5</span>
+                <div class="flex items-center space-x-3">
+                    <select id="roleSelector"
+                        class="h-10 px-4 bg-bg-surface border border-border-color rounded-lg text-sm text-primary-text focus:outline-none focus:border-primary-blue cursor-pointer">
+                        <option value="Senior Software Developer">Senior Software Developer</option>
+                        <option value="Data Scientist">Data Scientist</option>
+                        <option value="Product Manager">Product Manager</option>
+                        <option value="DevOps Engineer">DevOps Engineer</option>
+                        <option value="Frontend Developer">Frontend Developer</option>
+                    </select>
+                    <button id="startInterviewBtn"
+                        class="h-10 px-4 bg-success text-white text-sm font-semibold rounded-lg hover:bg-success/80 transition-colors">
+                        <i class="fa-solid fa-play mr-2"></i>Start Interview
+                    </button>
+                </div>
+            </div>
+
+
+            <!-- Resume Upload Panel Removed -->
+
+
+            <!-- Evaluation Scorecard (shown after interview ends) -->
+            <div id="evaluationPanel"
+                class="hidden p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-b border-border-color">
+                <div class="max-w-2xl mx-auto">
+                    <div class="text-center mb-4">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-success rounded-full mb-3">
+                            <i class="fa-solid fa-clipboard-check text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-primary-text">Interview Evaluation</h3>
+                        <p id="recommendationBadge"
+                            class="text-sm font-medium mt-2 px-4 py-1 rounded-full inline-block"></p>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-4 border border-border-color mb-4">
+                        <h4 class="text-sm font-semibold text-primary-text mb-3">Scorecard</h4>
+                        <div id="scorecardGrid" class="grid grid-cols-2 gap-3"></div>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-4 border border-border-color">
+                        <h4 class="text-sm font-semibold text-primary-text mb-2">Summary</h4>
+                        <p id="evaluationSummary" class="text-sm text-secondary-text"></p>
+                    </div>
                 </div>
             </div>
 
             <!-- Chat Messages -->
             <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-4">
-                <!-- Welcome Message -->
-                <div class="flex items-start space-x-3 fade-in">
-                    <div class="w-10 h-10 bg-primary-blue rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-robot text-white"></i>
-                    </div>
-                    <div class="flex-1 bg-card-surface border border-border-color p-4 rounded-lg max-w-xl">
-                        <p class="text-sm text-primary-text">Hello! Welcome to your interview for the Senior Software
-                            Developer position at TechCorp. I'm your AI interviewer, and I'll be conducting a technical
-                            assessment today.</p>
-                        <p class="text-xs text-secondary-text mt-2">Just now</p>
-                    </div>
-                </div>
-
-                <!-- Question 1 -->
-                <div class="flex items-start space-x-3 fade-in" style="animation-delay: 0.3s;">
-                    <div class="w-10 h-10 bg-primary-blue rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-robot text-white"></i>
-                    </div>
-                    <div class="flex-1 bg-card-surface border border-border-color p-4 rounded-lg max-w-xl">
-                        <div class="flex items-center space-x-2 mb-2">
-                            <span
-                                class="px-2 py-0.5 bg-primary-blue/10 text-primary-blue text-xs font-semibold rounded">Question
-                                1</span>
-                        </div>
-                        <p class="text-sm text-primary-text">Let's start with your background. Can you tell me about a
-                            challenging technical project you worked on recently? What was your role, and what
-                            technologies did you use?</p>
-                        <p class="text-xs text-secondary-text mt-2">Just now</p>
-                    </div>
-                </div>
+                <!-- Messages will be added dynamically -->
             </div>
 
             <!-- Typing Indicator -->
@@ -269,7 +284,7 @@
                 </div>
                 <div class="flex items-center justify-between mt-3">
                     <div class="flex items-center space-x-4 text-xs text-secondary-text">
-                        <span><i class="fa-solid fa-info-circle mr-1"></i> Speak clearly into your microphone</span>
+                        <span><i class="fa-solid fa-brain mr-1"></i> Powered by ChatGPT</span>
                     </div>
                     <div class="flex items-center space-x-2">
                         <button class="text-xs text-secondary-text hover:text-primary-blue">
@@ -282,33 +297,18 @@
     </div>
 
     <script>
-        // Demo Interview Questions and Follow-ups
-        const interviewFlow = [
-            {
-                question: "That's great to hear about your experience. Can you explain a time when you had to optimize a system for performance? What approach did you take?",
-                label: "Question 2"
-            },
-            {
-                question: "Interesting approach! How do you typically handle code reviews in your team? What do you look for when reviewing someone else's code?",
-                label: "Question 3"
-            },
-            {
-                question: "Now, let's discuss system design. How would you design a scalable notification system that can handle millions of users?",
-                label: "Question 4"
-            },
-            {
-                question: "Excellent explanation! For the final question: What's a technology or framework you've been wanting to learn, and why does it interest you?",
-                label: "Question 5"
-            },
-            {
-                question: "Thank you for your thoughtful responses throughout this interview. You've demonstrated strong technical knowledge and problem-solving skills. We'll be in touch with feedback within 2-3 business days. Good luck!",
-                label: "Complete",
-                isFinal: true
-            }
-        ];
-
-        let currentQuestionIndex = 0;
+        // Conversation history for OpenAI API
+        let conversationHistory = [];
+        let questionCount = 0;
         let timerSeconds = 25 * 60;
+        let isInterviewComplete = false;
+        let isInterviewStarted = false;
+        let selectedRole = 'Senior Software Developer';
+
+        // New: Session and Resume state
+        let sessionId = null;
+        let resumeAnalysis = null;
+        let interviewTranscript = '';
 
         const chatMessages = document.getElementById('chatMessages');
         const messageInput = document.getElementById('messageInput');
@@ -316,12 +316,18 @@
         const typingIndicator = document.getElementById('typingIndicator');
         const timerEl = document.getElementById('timer').querySelector('span');
 
+
+        // Resume Upload Elements Removed
+
+        // Evaluation Elements
+        const evaluationPanel = document.getElementById('evaluationPanel');
+
         // Timer
         function updateTimer() {
             const minutes = Math.floor(timerSeconds / 60);
             const seconds = timerSeconds % 60;
             timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            if (timerSeconds > 0) {
+            if (timerSeconds > 0 && !isInterviewComplete) {
                 timerSeconds--;
                 setTimeout(updateTimer, 1000);
             }
@@ -359,67 +365,546 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        // Handle sending message
-        function handleSend() {
+        // ==========================================
+        // SIMPLE VOICE INTERVIEW SYSTEM
+        // Green mic ON = listening, Green mic OFF = not listening
+        // Works without camera - just like Zoom
+        // ==========================================
+
+        let recognition = null;
+        let isMicOn = false;  // Green mic button state
+        let isAISpeaking = false;  // Prevents listening while AI speaks
+
+        // Initialize Speech Recognition once
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = () => {
+                console.log("🎤 Listening for your voice...");
+                const micStatus = document.getElementById('micStatus');
+                if (micStatus) micStatus.innerHTML = '<i class="fa-solid fa-ear-listen text-green-400 text-xs animate-pulse"></i>';
+            };
+
+            recognition.onresult = async (event) => {
+                const transcript = event.results[0][0].transcript.trim();
+                console.log("You said:", transcript);
+
+                if (!transcript || !isInterviewStarted || isInterviewComplete || isAISpeaking) {
+                    // Restart listening if conditions allow
+                    if (isMicOn && !isAISpeaking && !isInterviewComplete) {
+                        setTimeout(() => safeStartRecognition(), 500);
+                    }
+                    return;
+                }
+
+                // STOP recognition immediately
+                try { recognition.abort(); } catch (e) { }
+
+                // Show user's message
+                addMessage(transcript, true);
+                questionCount++;
+
+                // Show typing indicator
+                typingIndicator.classList.remove('hidden');
+
+                // Get AI response
+                const aiResponse = await getAIResponse(transcript);
+
+                // Hide typing indicator
+                typingIndicator.classList.add('hidden');
+
+                // Check if interview should end
+                const isEnding = aiResponse.toLowerCase().includes('thank you for') &&
+                    (aiResponse.toLowerCase().includes('interview') || aiResponse.toLowerCase().includes('good luck'));
+
+                // Show AI message
+                addMessage(aiResponse, false, isEnding || questionCount >= 6 ? 'Complete' : undefined);
+
+                // AI speaks - BLOCK all listening
+                await aiSpeaks(aiResponse);
+
+                // End interview or continue
+                if (isEnding || questionCount >= 6) {
+                    endInterview();
+                } else {
+                    // Resume listening after AI finishes
+                    if (isMicOn && !isInterviewComplete) {
+                        console.log("AI done, resuming listening...");
+                        setTimeout(() => safeStartRecognition(), 500);
+                    }
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.log("Mic error:", event.error);
+                // Restart if conditions allow
+                if (isMicOn && !isAISpeaking && !isInterviewComplete && isInterviewStarted) {
+                    setTimeout(() => safeStartRecognition(), 1000);
+                }
+            };
+
+            recognition.onend = () => {
+                console.log("Recognition stopped");
+                // Only auto-restart if mic is on, AI is not speaking, and interview is active
+                if (isMicOn && !isAISpeaking && !isInterviewComplete && isInterviewStarted) {
+                    setTimeout(() => safeStartRecognition(), 300);
+                }
+            };
+        }
+
+        // Safe way to start recognition (handles already-started error)
+        function safeStartRecognition() {
+            if (!recognition || isAISpeaking || isInterviewComplete) return;
+            try {
+                recognition.start();
+            } catch (e) {
+                // Already running, that's fine
+                console.log("Recognition already active");
+            }
+        }
+
+        // AI speaks - completely blocks listening
+        function aiSpeaks(text) {
+            return new Promise((resolve) => {
+                if (!('speechSynthesis' in window)) {
+                    resolve();
+                    return;
+                }
+
+                // BLOCK listening
+                isAISpeaking = true;
+                console.log("🔊 AI is speaking (mic blocked)...");
+
+                // Force stop any active recognition
+                try { recognition.abort(); } catch (e) { }
+
+                // Show speaking indicator
+                document.getElementById('aiSpeakingIndicator').classList.remove('hidden');
+                const micStatus = document.getElementById('micStatus');
+                if (micStatus) micStatus.innerHTML = '<i class="fa-solid fa-volume-high text-blue-400 text-xs"></i>';
+
+                // Cancel any pending speech
+                window.speechSynthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 1;
+                utterance.pitch = 1;
+                utterance.volume = 1;
+
+                const voices = window.speechSynthesis.getVoices();
+                const preferredVoice = voices.find(v => v.name.includes('Google US English') || v.name.includes('Samantha'));
+                if (preferredVoice) utterance.voice = preferredVoice;
+
+                utterance.onend = () => {
+                    console.log("🔇 AI finished speaking (mic unblocked)");
+                    document.getElementById('aiSpeakingIndicator').classList.add('hidden');
+                    isAISpeaking = false;  // UNBLOCK listening
+                    if (micStatus && isMicOn) micStatus.innerHTML = '<i class="fa-solid fa-microphone text-white text-xs"></i>';
+                    resolve();
+                };
+
+                utterance.onerror = () => {
+                    console.log("Speech error");
+                    document.getElementById('aiSpeakingIndicator').classList.add('hidden');
+                    isAISpeaking = false;
+                    resolve();
+                };
+
+                window.speechSynthesis.speak(utterance);
+            });
+        }
+
+        // Turn mic ON
+        function turnMicOn() {
+            if (!recognition) {
+                alert("Speech recognition not supported. Use Chrome or Edge.");
+                return;
+            }
+            isMicOn = true;
+            console.log("🟢 Mic turned ON");
+
+            // Start listening if conditions allow
+            if (isInterviewStarted && !isAISpeaking && !isInterviewComplete) {
+                safeStartRecognition();
+            }
+        }
+
+        // Turn mic OFF
+        function turnMicOff() {
+            isMicOn = false;
+            console.log("🔴 Mic turned OFF");
+            try { recognition.abort(); } catch (e) { }
+
+            const micStatus = document.getElementById('micStatus');
+            if (micStatus) micStatus.innerHTML = '<i class="fa-solid fa-microphone-slash text-red-500 text-xs"></i>';
+        }
+
+        // End interview
+        async function endInterview() {
+            isInterviewComplete = true;
+            turnMicOff();
+            messageInput.disabled = true;
+            sendBtn.disabled = true;
+            messageInput.placeholder = "Interview completed. Thank you!";
+
+            const statusBadge = document.querySelector('.bg-green-100');
+            if (statusBadge) {
+                statusBadge.className = 'flex items-center space-x-2 bg-blue-100 px-4 py-2 rounded-full';
+                statusBadge.innerHTML = '<i class="fa-solid fa-check text-primary-blue"></i><span class="text-sm text-primary-blue font-semibold">Interview Complete</span>';
+            }
+
+            // Trigger Evaluation
+            addMessage("Generating interview evaluation...", false, "System");
+            try {
+                // Format transcript
+                const transcript = conversationHistory.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n');
+
+                const response = await fetch('/api/evaluate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sessionId, transcript, role: selectedRole })
+                });
+
+                const data = await response.json();
+                if (data.success && data.evaluation) {
+                    displayEvaluation(data.evaluation);
+                }
+            } catch (error) {
+                console.error("Evaluation error:", error);
+                addMessage("Could not generate evaluation report.", false, "Error");
+            }
+        }
+
+        function displayEvaluation(evaluation) {
+            // Show panel
+            evaluationPanel.classList.remove('hidden');
+
+            // Badge
+            const badge = document.getElementById('recommendationBadge');
+            const rec = evaluation.recommendation || "N/A";
+            badge.textContent = rec;
+
+            if (rec.includes('Strong') || rec === 'Recommend') {
+                badge.className = 'text-sm font-medium mt-2 px-4 py-1 rounded-full inline-block bg-success text-white';
+            } else if (rec.includes('Maybe')) {
+                badge.className = 'text-sm font-medium mt-2 px-4 py-1 rounded-full inline-block bg-warning text-white';
+            } else {
+                badge.className = 'text-sm font-medium mt-2 px-4 py-1 rounded-full inline-block bg-error text-white';
+            }
+
+            // Scorecard
+            const grid = document.getElementById('scorecardGrid');
+            grid.innerHTML = '';
+            if (evaluation.scorecard) {
+                for (const [skill, score] of Object.entries(evaluation.scorecard)) {
+                    // Convert snake_case to Title Case
+                    const title = skill.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    const scoreColor = score >= 4 ? 'text-success' : (score >= 3 ? 'text-warning' : 'text-error');
+
+                    grid.innerHTML += `
+                        <div class="flex justify-between items-center p-2 bg-bg-surface rounded">
+                            <span class="text-xs font-medium text-secondary-text">${title}</span>
+                            <span class="text-sm font-bold ${scoreColor}">${score}/5</span>
+                        </div>
+                    `;
+                }
+            }
+
+            // Summary
+            document.getElementById('evaluationSummary').textContent = evaluation.summary || "No summary available.";
+
+            // Scroll to evaluation
+            evaluationPanel.scrollIntoView({ behavior: 'smooth' });
+        }
+
+
+        // Call OpenAI API (Enhanced)
+        async function getAIResponse(userMessage) {
+            // Add user message to history
+            conversationHistory.push({ role: 'user', content: userMessage });
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
+                // Use standard chat endpoint
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        messages: conversationHistory,
+                        role: selectedRole
+                    }),
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.error || 'API request failed');
+                }
+
+                const data = await response.json();
+                const aiMessage = data.response;
+
+                // Add AI response to history
+                conversationHistory.push({ role: 'assistant', content: aiMessage });
+
+                return aiMessage;
+            } catch (error) {
+                console.error('Error calling AI:', error);
+                if (error.name === 'AbortError') {
+                    return "I apologize, the connection timed out. Please try again.";
+                }
+                return `System Error: ${error.message}. Please check your connection.`;
+            }
+        }
+
+
+        // Handle send message
+        async function handleSend() {
             const message = messageInput.value.trim();
-            if (!message) return;
+            if (!message || isInterviewComplete || !isInterviewStarted) return;
+
+            // Stop any current speech
+            window.speechSynthesis.cancel();
 
             // Add user message
             addMessage(message, true);
             messageInput.value = '';
-
-            // Update question counter
-            const questionCounter = document.querySelector('.bg-blue-100.text-primary-blue');
-            if (questionCounter && currentQuestionIndex < interviewFlow.length - 1) {
-                questionCounter.textContent = `Question ${currentQuestionIndex + 2}/5`;
-            }
+            questionCount++;
 
             // Show typing indicator
             typingIndicator.classList.remove('hidden');
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // Simulate AI response
-            setTimeout(() => {
-                typingIndicator.classList.add('hidden');
+            // Get AI response
+            const aiResponse = await getAIResponse(message);
 
-                if (currentQuestionIndex < interviewFlow.length) {
-                    const nextItem = interviewFlow[currentQuestionIndex];
-                    addMessage(nextItem.question, false, nextItem.label);
+            // Hide typing indicator
+            typingIndicator.classList.add('hidden');
 
-                    if (nextItem.isFinal) {
-                        messageInput.disabled = true;
-                        sendBtn.disabled = true;
-                        messageInput.placeholder = "Interview completed. Thank you for participating!";
+            // Check if interview should end
+            const isEnding = aiResponse.toLowerCase().includes('thank you for') &&
+                (aiResponse.toLowerCase().includes('interview') || aiResponse.toLowerCase().includes('good luck'));
 
-                        // Update status
-                        const statusBadge = document.querySelector('.bg-green-100');
-                        if (statusBadge) {
-                            statusBadge.className = 'flex items-center space-x-2 bg-blue-100 px-4 py-2 rounded-full';
-                            statusBadge.innerHTML = '<i class="fa-solid fa-check text-primary-blue"></i><span class="text-sm text-primary-blue font-semibold">Interview Complete</span>';
-                        }
-                    }
+            // Show response
+            const label = isEnding || questionCount >= 6 ? 'Complete' : undefined;
+            addMessage(aiResponse, false, label);
 
-                    currentQuestionIndex++;
-                }
-            }, 2000 + Math.random() * 1500);
+            // Speak response
+            await aiSpeaks(aiResponse);
+
+            if (isEnding || questionCount >= 6) {
+                endInterview();
+            }
         }
 
+        // Start interview with AI greeting
+        async function startInterview() {
+            if (isInterviewStarted) return;
+            isInterviewStarted = true;
+
+            // Disable role selector and start button
+            document.getElementById('roleSelector').disabled = true;
+            document.getElementById('startInterviewBtn').disabled = true;
+            document.getElementById('startInterviewBtn').classList.remove('bg-success');
+            document.getElementById('startInterviewBtn').classList.add('bg-gray-400');
+            document.getElementById('startInterviewBtn').innerHTML = '<i class="fa-solid fa-check mr-2"></i>In Progress';
+
+            // Update title
+            document.getElementById('interviewTitle').textContent = `${selectedRole} Interview`;
+
+            typingIndicator.classList.remove('hidden');
+
+            try {
+                // Modified: Uses standard chat endpoint since resume feature is removed
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        messages: [],
+                        role: selectedRole
+                    })
+                });
+
+                const data = await response.json();
+                const greeting = data.response;
+
+                typingIndicator.classList.add('hidden');
+
+                conversationHistory.push({ role: 'assistant', content: greeting });
+                addMessage(greeting, false, 'Welcome');
+
+                // Wait for AI to finish greeting, then start listening
+                await aiSpeaks(greeting);
+
+                // Auto-start voice if mic is ON
+                const micBtn = document.getElementById('micBtn');
+                if (micBtn && micBtn.classList.contains('bg-success')) {
+                    turnMicOn();
+                }
+            } catch (error) {
+                console.error("Error starting interview:", error);
+                typingIndicator.classList.add('hidden');
+                addMessage("Error starting interview interface. Please refresh.", false, "Error");
+            }
+        }
+
+
+        // Event listeners
         sendBtn.addEventListener('click', handleSend);
         messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') handleSend();
         });
 
-        // Toggle buttons
+        // Camera & Mic Logic
+        let mediaStream = null;
+
+        async function startCamera() {
+            // Check for secure context first
+            if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                console.warn("Microphone access may be blocked on non-secure (HTTP) connections.");
+                // We will still try, but warn if it fails
+            }
+
+            try {
+                // Try to get both video and audio
+                let stream;
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                } catch (firstErr) {
+                    console.warn("Could not get Video+Audio, trying Audio only...", firstErr);
+                    // Fallback: Audio only (if user has no webcam)
+                    stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+                    // If audio-only works, show a placeholder
+                    document.getElementById('cameraPlaceholder').innerText = "No Camera Detected (Audio Only)";
+                }
+
+                mediaStream = stream;
+
+                mediaStream = stream;
+
+                const videoEl = document.getElementById('localVideo');
+                videoEl.srcObject = stream;
+
+                // Check if we actually have a video track
+                if (stream.getVideoTracks().length > 0) {
+                    // Video is available -> Show video, Hide placeholder
+                    videoEl.classList.remove('hidden');
+                    document.getElementById('cameraPlaceholder').classList.add('hidden');
+                    document.getElementById('videoBtn').classList.add('bg-primary-blue');
+                    document.getElementById('videoBtn').classList.remove('bg-error');
+                } else {
+                    // Audio only -> Keep video hidden, Show placeholder with clear text
+                    videoEl.classList.add('hidden');
+                    document.getElementById('cameraPlaceholder').classList.remove('hidden');
+                    // Find the text inside placeholder and update it
+                    const placeholderText = document.getElementById('cameraPlaceholder').querySelector('p.text-white');
+                    if (placeholderText) placeholderText.innerText = "Camera Off (Audio Active)";
+
+                    // Mark video button as off/red since we have no video
+                    document.getElementById('videoBtn').classList.remove('bg-primary-blue');
+                    document.getElementById('videoBtn').classList.add('bg-error');
+                }
+
+                document.getElementById('micStatus').classList.remove('hidden');
+                document.getElementById('micStatus').innerHTML = '<i class="fa-solid fa-microphone text-white text-xs"></i>';
+
+                document.getElementById('micBtn').classList.add('bg-success');
+                document.getElementById('micBtn').classList.remove('bg-error');
+
+                // AUTO-START voice mode when camera is enabled during interview
+                if (isInterviewStarted && !isInterviewComplete) {
+                    console.log("Devices enabled - checking mic state...");
+                    // We don't auto-turn mic on here, we respect the button state
+                    // If button is green (bg-success), turn mic on
+                    if (document.getElementById('micBtn').classList.contains('bg-success')) {
+                        turnMicOn();
+                    }
+                }
+
+            } catch (err) {
+                console.error("Error accessing media devices:", err);
+
+                let errorMessage = "Device Access Error: ";
+
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    errorMessage += "Permission Denied. Please enable Microphone/Camera in your browser address bar (Lock icon).";
+                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                    errorMessage += "No Microphone found. Please connect a microphone.";
+                } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+                    errorMessage += "Hardware is busy. Is another app (Zoom/Teams) using your mic/cam?";
+                } else {
+                    errorMessage += err.message;
+                }
+
+                if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+                    errorMessage += "\n\n⚠️ NOTE: You are on HTTP. Browsers block secure devices on HTTP. Ensure you are using HTTPS.";
+                }
+
+                alert(errorMessage);
+            }
+        }
+
+        // Toggle mic button - now controls continuous voice listening
+        // Toggle mic button - SIMPLE control
         document.getElementById('micBtn').addEventListener('click', function () {
-            this.classList.toggle('bg-success');
-            this.classList.toggle('bg-error');
+            const isMuted = this.classList.contains('bg-error'); // Currently red/off
+            console.log("Mic click. Was muted:", isMuted);
+
+            if (mediaStream) {
+                mediaStream.getAudioTracks().forEach(track => track.enabled = isMuted);
+            }
+
+            const statusIcon = document.getElementById('micStatus');
+
+            if (isMuted) {
+                // Switching to ON (Green)
+                this.classList.remove('bg-error');
+                this.classList.add('bg-success');
+                this.innerHTML = '<i class="fa-solid fa-microphone text-white text-xl"></i>';
+                if (statusIcon) statusIcon.innerHTML = '<i class="fa-solid fa-microphone text-white text-xs"></i>';
+
+                turnMicOn();
+            } else {
+                // Switching to OFF (Red)
+                this.classList.remove('bg-success');
+                this.classList.add('bg-error');
+                this.innerHTML = '<i class="fa-solid fa-microphone-slash text-white text-xl"></i>';
+                if (statusIcon) statusIcon.innerHTML = '<i class="fa-solid fa-microphone-slash text-red-500 text-xs"></i>';
+
+                turnMicOff();
+            }
         });
 
+        // Toggle video button
         document.getElementById('videoBtn').addEventListener('click', function () {
-            this.classList.toggle('bg-primary-blue');
-            this.classList.toggle('bg-error');
+            const isVideoOff = this.classList.contains('bg-error');
+
+            if (mediaStream) {
+                mediaStream.getVideoTracks().forEach(track => track.enabled = isVideoOff);
+            }
+
+            if (isVideoOff) {
+                this.classList.remove('bg-error');
+                this.classList.add('bg-primary-blue');
+                this.innerHTML = '<i class="fa-solid fa-video text-white text-xl"></i>';
+                if (mediaStream) document.getElementById('localVideo').classList.remove('hidden');
+            } else {
+                this.classList.remove('bg-primary-blue');
+                this.classList.add('bg-error');
+                this.innerHTML = '<i class="fa-solid fa-video-slash text-white text-xl"></i>';
+                document.getElementById('localVideo').classList.add('hidden');
+            }
         });
 
+        // End interview button
         document.getElementById('endBtn').addEventListener('click', function () {
             if (confirm('Are you sure you want to end this interview?')) {
                 window.location.href = '/candidate';
@@ -428,17 +913,38 @@
 
         // Voice record button
         document.getElementById('voiceRecordBtn').addEventListener('click', function () {
+            if (!recognition) {
+                alert("Speech recognition not supported in this browser. Try Chrome/Edge.");
+                return;
+            }
+
             this.classList.toggle('bg-error');
             this.classList.toggle('text-white');
             const icon = this.querySelector('i');
+
             if (this.classList.contains('bg-error')) {
                 icon.classList.remove('fa-microphone');
                 icon.classList.add('fa-stop');
+                recognition.start();
             } else {
                 icon.classList.add('fa-microphone');
                 icon.classList.remove('fa-stop');
+                recognition.stop();
             }
         });
+
+        // Load voices
+        window.speechSynthesis.onvoiceschanged = function () {
+            // Voices loaded
+        };
+
+        // Role selector change handler
+        document.getElementById('roleSelector').addEventListener('change', function () {
+            selectedRole = this.value;
+        });
+
+        // Start Interview button handler
+        document.getElementById('startInterviewBtn').addEventListener('click', startInterview);
     </script>
 </body>
 
