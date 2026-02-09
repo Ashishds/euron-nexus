@@ -1,17 +1,23 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Organization Detail</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>::-webkit-scrollbar { display: none;}</style>
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
     <script>
         tailwind.config = {
             theme: {
@@ -36,591 +42,649 @@
         }
     </script>
 </head>
+
 <body class="font-inter antialiased bg-bg-surface">
 
-<div id="super-admin-dashboard" class="flex h-screen w-screen overflow-hidden">
-    
-    <aside id="sidebar" class="w-64 bg-card-surface border-r border-border-color flex flex-col">
-        <div class="h-16 border-b border-border-color flex items-center px-6">
-            <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 bg-primary-blue rounded-lg flex items-center justify-center">
-                    <i class="fa-solid fa-shield-halved text-white text-sm"></i>
-                </div>
-                <div>
-                    <div class="text-primary-text text-sm font-bold">Euron</div>
-                    <div class="text-secondary-text text-xs">Super Admin</div>
-                </div>
-            </div>
-        </div>
-        
-        <nav class="flex-1 overflow-y-auto py-4">
-            <div class="px-3 mb-6">
-                <div class="text-xs font-semibold text-secondary-text uppercase tracking-wider mb-2 px-3">Main</div>
-                <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
-                    <i class="fa-solid fa-chart-line w-5"></i>
-                    <span class="text-sm font-medium">Dashboard</span>
-                </a>
-                <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg bg-blue-50 text-primary-blue transition-all duration-150">
-                    <i class="fa-solid fa-building w-5"></i>
-                    <span class="text-sm font-medium">Organizations</span>
-                </a>
-                <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
-                    <i class="fa-solid fa-users w-5"></i>
-                    <span class="text-sm font-medium">Users</span>
-                </a>
-                <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
-                    <i class="fa-solid fa-credit-card w-5"></i>
-                    <span class="text-sm font-medium">Billing</span>
-                </a>
-            </div>
-            
-            <div class="px-3 mb-6">
-                <div class="text-xs font-semibold text-secondary-text uppercase tracking-wider mb-2 px-3">System</div>
-                <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
-                    <i class="fa-solid fa-gauge-high w-5"></i>
-                    <span class="text-sm font-medium">Performance</span>
-                </a>
-                <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
-                    <i class="fa-solid fa-shield-check w-5"></i>
-                    <span class="text-sm font-medium">Security</span>
-                </a>
-                <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
-                    <i class="fa-solid fa-clock-rotate-left w-5"></i>
-                    <span class="text-sm font-medium">Activity Logs</span>
-                </a>
-                <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
-                    <i class="fa-solid fa-gear w-5"></i>
-                    <span class="text-sm font-medium">Settings</span>
-                </a>
-            </div>
-        </nav>
-        
-        <div class="border-t border-border-color p-4">
-            <div class="flex items-center space-x-3">
-                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Admin" class="w-10 h-10 rounded-full border-2 border-border-color">
-                <div class="flex-1 min-w-0">
-                    <div class="text-sm font-semibold text-primary-text truncate">Admin User</div>
-                    <div class="text-xs text-secondary-text truncate">admin@euron.one</div>
-                </div>
-                <button class="text-secondary-text hover:text-primary-text">
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                </button>
-            </div>
-        </div>
-    </aside>
-    
-    <main id="main-content" class="flex-1 flex flex-col overflow-hidden">
-        
-        <header id="header" class="h-16 bg-card-surface border-b border-border-color flex items-center justify-between px-8">
-            <div class="flex items-center space-x-4">
-                <button class="text-secondary-text hover:text-primary-text lg:hidden">
-                    <i class="fa-solid fa-bars text-xl"></i>
-                </button>
-                <div class="relative">
-                    <input type="text" placeholder="Search organizations, users, invoices..." class="w-96 h-10 bg-bg-surface border border-border-color rounded-lg pl-10 pr-4 text-sm text-primary-text placeholder-secondary-text focus:outline-none focus:border-primary-blue focus:ring-3 focus:ring-primary-blue focus:ring-opacity-10">
-                    <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-secondary-text text-sm"></i>
-                </div>
-            </div>
-            
-            <div class="flex items-center space-x-4">
-                <button class="relative text-secondary-text hover:text-primary-text">
-                    <i class="fa-solid fa-bell text-xl"></i>
-                    <span class="absolute -top-1 -right-1 w-5 h-5 bg-error text-white text-xs rounded-full flex items-center justify-center">3</span>
-                </button>
-                <button class="text-secondary-text hover:text-primary-text">
-                    <i class="fa-solid fa-question-circle text-xl"></i>
-                </button>
-                <div class="w-px h-6 bg-border-color"></div>
-                <div class="flex items-center space-x-2">
-                    <div class="w-2 h-2 bg-success rounded-full"></div>
-                    <span class="text-sm text-secondary-text">All Systems Operational</span>
-                </div>
-            </div>
-        </header>
-        
-        <div id="page-content" class="flex-1 overflow-y-auto">
-            
-            <div id="page-header-section" class="bg-card-surface border-b border-border-color">
-                <div class="px-8 py-6">
-                    <div class="flex items-center space-x-2 text-sm text-secondary-text mb-4">
-                        <a href="#" class="hover:text-primary-blue transition-colors">Organizations</a>
-                        <i class="fa-solid fa-chevron-right text-xs"></i>
-                        <span class="text-primary-text font-medium">TechCorp Solutions Inc.</span>
-                    </div>
-                    
-                    <div class="flex items-start justify-between">
-                        <div class="flex items-start space-x-4">
-                            <div class="w-16 h-16 bg-gradient-to-br from-primary-blue to-hover-blue rounded-xl flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-                                TC
-                            </div>
-                            
-                            <div>
-                                <div class="flex items-center space-x-3 mb-2">
-                                    <h1 class="text-3xl font-bold text-primary-text">TechCorp Solutions Inc.</h1>
-                                    <span class="px-3 py-1 bg-green-100 text-success text-xs font-semibold rounded-full">Active</span>
-                                    <span class="px-3 py-1 bg-blue-100 text-primary-blue text-xs font-semibold rounded-full">Enterprise</span>
-                                </div>
-                                
-                                <div class="flex items-center space-x-6 text-sm text-secondary-text">
-                                    <a href="#" class="flex items-center space-x-2 hover:text-primary-blue transition-colors">
-                                        <i class="fa-solid fa-globe"></i>
-                                        <span>techcorp.com</span>
-                                    </a>
-                                    <div class="flex items-center space-x-2">
-                                        <i class="fa-solid fa-calendar"></i>
-                                        <span>Joined Jan 15, 2024</span>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <i class="fa-solid fa-map-marker-alt"></i>
-                                        <span>San Francisco, CA</span>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <i class="fa-solid fa-building"></i>
-                                        <span>ID: ORG-2847</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center space-x-3">
-                            <button class="h-10 px-5 bg-transparent border border-primary-blue text-primary-blue text-sm font-semibold rounded-full hover:bg-primary-blue hover:bg-opacity-8 transition-all duration-150">
-                                <i class="fa-solid fa-user-secret mr-2"></i>
-                                Impersonate
-                            </button>
-                            <button class="h-10 px-5 bg-primary-blue text-white text-sm font-semibold rounded-full hover:bg-hover-blue transition-all duration-150">
-                                <i class="fa-solid fa-pen mr-2"></i>
-                                Edit
-                            </button>
-                            <button class="h-10 w-10 bg-transparent border border-border-color text-secondary-text rounded-full hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
-                                <i class="fa-solid fa-ellipsis-vertical"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="tab-navigation" class="border-t border-border-color">
-                    <div class="px-8">
-                        <div class="flex items-center space-x-1">
-                            <button class="tab-item active h-12 px-5 text-sm font-medium text-primary-blue border-b-2 border-primary-blue transition-all duration-150">
-                                Overview
-                            </button>
-                            <button class="tab-item h-12 px-5 text-sm font-medium text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
-                                Users
-                            </button>
-                            <button class="tab-item h-12 px-5 text-sm font-medium text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
-                                Interviews
-                            </button>
-                            <button class="tab-item h-12 px-5 text-sm font-medium text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
-                                Billing
-                            </button>
-                            <button class="tab-item h-12 px-5 text-sm font-medium text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
-                                Quotas
-                            </button>
-                            <button class="tab-item h-12 px-5 text-sm font-medium text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
-                                Settings
-                            </button>
-                            <button class="tab-item h-12 px-5 text-sm font-medium text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
-                                Activity Log
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="overview-content" class="p-8">
-                
-                <div id="summary-stats" class="grid grid-cols-4 gap-6 mb-8">
-                    <div class="bg-card-surface border border-border-color rounded-lg p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <i class="fa-solid fa-users text-primary-blue text-xl"></i>
-                            </div>
-                            <span class="text-xs text-success font-semibold">+12%</span>
-                        </div>
-                        <div class="text-3xl font-bold text-primary-text mb-1">247</div>
-                        <div class="text-sm text-secondary-text">Total Users</div>
-                    </div>
-                    
-                    <div class="bg-card-surface border border-border-color rounded-lg p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                                <i class="fa-solid fa-comments text-success text-xl"></i>
-                            </div>
-                            <span class="text-xs text-success font-semibold">+8%</span>
-                        </div>
-                        <div class="text-3xl font-bold text-primary-text mb-1">1,429</div>
-                        <div class="text-sm text-secondary-text">Interviews Conducted</div>
-                    </div>
-                    
-                    <div class="bg-card-surface border border-border-color rounded-lg p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                                <i class="fa-solid fa-chart-line text-purple-600 text-xl"></i>
-                            </div>
-                            <span class="text-xs text-success font-semibold">+24%</span>
-                        </div>
-                        <div class="text-3xl font-bold text-primary-text mb-1">89%</div>
-                        <div class="text-sm text-secondary-text">Completion Rate</div>
-                    </div>
-                    
-                    <div class="bg-card-surface border border-border-color rounded-lg p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
-                                <i class="fa-solid fa-dollar-sign text-warning text-xl"></i>
-                            </div>
-                            <span class="text-xs text-secondary-text">Monthly</span>
-                        </div>
-                        <div class="text-3xl font-bold text-primary-text mb-1">$4,999</div>
-                        <div class="text-sm text-secondary-text">Current MRR</div>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-3 gap-6 mb-8">
-                    
-                    <div class="col-span-2 bg-card-surface border border-border-color rounded-lg p-6">
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-lg font-semibold text-primary-text">Usage Overview</h2>
-                            <div class="flex items-center space-x-2">
-                                <button class="px-3 py-1 text-xs font-medium text-secondary-text hover:text-primary-text hover:bg-bg-surface rounded-md transition-all">7D</button>
-                                <button class="px-3 py-1 text-xs font-medium text-secondary-text hover:text-primary-text hover:bg-bg-surface rounded-md transition-all">30D</button>
-                                <button class="px-3 py-1 text-xs font-medium text-white bg-primary-blue rounded-md">90D</button>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-3 gap-4 mb-6">
-                            <div class="bg-bg-surface rounded-lg p-4">
-                                <div class="text-xs text-secondary-text mb-1">Interviews</div>
-                                <div class="text-2xl font-bold text-primary-text">1,429</div>
-                                <div class="text-xs text-success mt-1">↑ 18% vs last period</div>
-                            </div>
-                            <div class="bg-bg-surface rounded-lg p-4">
-                                <div class="text-xs text-secondary-text mb-1">API Calls</div>
-                                <div class="text-2xl font-bold text-primary-text">89.2K</div>
-                                <div class="text-xs text-success mt-1">↑ 12% vs last period</div>
-                            </div>
-                            <div class="bg-bg-surface rounded-lg p-4">
-                                <div class="text-xs text-secondary-text mb-1">Storage Used</div>
-                                <div class="text-2xl font-bold text-primary-text">24.8 GB</div>
-                                <div class="text-xs text-secondary-text mt-1">of 100 GB</div>
-                            </div>
-                        </div>
-                        
-                        <div class="h-64 bg-bg-surface rounded-lg flex items-center justify-center">
-                            <div class="text-center">
-                                <i class="fa-solid fa-chart-area text-4xl text-secondary-text mb-3"></i>
-                                <div class="text-sm text-secondary-text">Usage chart visualization</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-card-surface border border-border-color rounded-lg p-6">
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-lg font-semibold text-primary-text">Quick Actions</h2>
-                        </div>
-                        
-                        <div class="space-y-3">
-                            <button class="w-full h-12 bg-primary-blue text-white text-sm font-semibold rounded-lg hover:bg-hover-blue transition-all duration-150 flex items-center justify-center space-x-2">
-                                <i class="fa-solid fa-paper-plane"></i>
-                                <span>Send Message</span>
-                            </button>
-                            
-                            <button class="w-full h-12 bg-transparent border border-border-color text-primary-text text-sm font-semibold rounded-lg hover:bg-bg-surface transition-all duration-150 flex items-center justify-center space-x-2">
-                                <i class="fa-solid fa-file-invoice"></i>
-                                <span>Generate Invoice</span>
-                            </button>
-                            
-                            <button class="w-full h-12 bg-transparent border border-border-color text-primary-text text-sm font-semibold rounded-lg hover:bg-bg-surface transition-all duration-150 flex items-center justify-center space-x-2">
-                                <i class="fa-solid fa-chart-simple"></i>
-                                <span>View Reports</span>
-                            </button>
-                            
-                            <button class="w-full h-12 bg-transparent border border-border-color text-primary-text text-sm font-semibold rounded-lg hover:bg-bg-surface transition-all duration-150 flex items-center justify-center space-x-2">
-                                <i class="fa-solid fa-sliders"></i>
-                                <span>Adjust Quotas</span>
-                            </button>
-                        </div>
-                        
-                        <div class="mt-6 pt-6 border-t border-border-color">
-                            <div class="text-xs font-semibold text-secondary-text uppercase mb-3">Account Health</div>
-                            <div class="space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm text-primary-text">Payment Status</span>
-                                    <span class="px-2 py-1 bg-green-100 text-success text-xs font-semibold rounded">Current</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm text-primary-text">Compliance</span>
-                                    <span class="px-2 py-1 bg-green-100 text-success text-xs font-semibold rounded">Verified</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm text-primary-text">Support Tier</span>
-                                    <span class="px-2 py-1 bg-purple-100 text-purple-600 text-xs font-semibold rounded">Premium</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-6 mb-8">
-                    
-                    <div class="bg-card-surface border border-border-color rounded-lg p-6">
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-lg font-semibold text-primary-text">Recent Activity</h2>
-                            <a href="#" class="text-sm text-primary-blue hover:text-hover-blue font-medium">View All</a>
-                        </div>
-                        
-                        <div class="space-y-4">
-                            <div class="flex items-start space-x-3 pb-4 border-b border-border-color">
-                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                    <i class="fa-solid fa-user-plus text-primary-blue text-sm"></i>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="text-sm text-primary-text mb-1">New user added</div>
-                                    <div class="text-xs text-secondary-text">Sarah Johnson joined the organization</div>
-                                    <div class="text-xs text-secondary-text mt-1">2 hours ago</div>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start space-x-3 pb-4 border-b border-border-color">
-                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                    <i class="fa-solid fa-check text-success text-sm"></i>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="text-sm text-primary-text mb-1">Interview completed</div>
-                                    <div class="text-xs text-secondary-text">Senior Developer position - 45 min session</div>
-                                    <div class="text-xs text-secondary-text mt-1">5 hours ago</div>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start space-x-3 pb-4 border-b border-border-color">
-                                <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                    <i class="fa-solid fa-credit-card text-purple-600 text-sm"></i>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="text-sm text-primary-text mb-1">Payment processed</div>
-                                    <div class="text-xs text-secondary-text">Monthly subscription - $4,999.00</div>
-                                    <div class="text-xs text-secondary-text mt-1">1 day ago</div>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start space-x-3 pb-4 border-b border-border-color">
-                                <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                    <i class="fa-solid fa-sliders text-warning text-sm"></i>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="text-sm text-primary-text mb-1">Quota adjusted</div>
-                                    <div class="text-xs text-secondary-text">Interview limit increased to 2,000/month</div>
-                                    <div class="text-xs text-secondary-text mt-1">2 days ago</div>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start space-x-3">
-                                <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                    <i class="fa-solid fa-shield-check text-error text-sm"></i>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="text-sm text-primary-text mb-1">Security update</div>
-                                    <div class="text-xs text-secondary-text">2FA enabled for all admin users</div>
-                                    <div class="text-xs text-secondary-text mt-1">3 days ago</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-card-surface border border-border-color rounded-lg p-6">
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-lg font-semibold text-primary-text">Subscription Details</h2>
-                            <button class="text-sm text-primary-blue hover:text-hover-blue font-medium">Manage</button>
-                        </div>
-                        
-                        <div class="bg-gradient-to-br from-primary-blue to-hover-blue rounded-lg p-6 text-white mb-6">
-                            <div class="text-sm opacity-90 mb-2">Current Plan</div>
-                            <div class="text-2xl font-bold mb-4">Enterprise Premium</div>
-                            <div class="flex items-baseline space-x-2 mb-4">
-                                <span class="text-4xl font-bold">$4,999</span>
-                                <span class="text-sm opacity-90">/month</span>
-                            </div>
-                            <div class="flex items-center justify-between pt-4 border-t border-white border-opacity-20">
-                                <span class="text-sm">Next billing date</span>
-                                <span class="text-sm font-semibold">Feb 15, 2024</span>
-                            </div>
-                        </div>
-                        
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between pb-3 border-b border-border-color">
-                                <div class="flex items-center space-x-3">
-                                    <i class="fa-solid fa-check-circle text-success"></i>
-                                    <span class="text-sm text-primary-text">Unlimited users</span>
-                                </div>
-                                <span class="text-xs text-secondary-text">Active</span>
-                            </div>
-                            
-                            <div class="flex items-center justify-between pb-3 border-b border-border-color">
-                                <div class="flex items-center space-x-3">
-                                    <i class="fa-solid fa-check-circle text-success"></i>
-                                    <span class="text-sm text-primary-text">2,000 interviews/month</span>
-                                </div>
-                                <span class="text-xs text-secondary-text">1,429 used</span>
-                            </div>
-                            
-                            <div class="flex items-center justify-between pb-3 border-b border-border-color">
-                                <div class="flex items-center space-x-3">
-                                    <i class="fa-solid fa-check-circle text-success"></i>
-                                    <span class="text-sm text-primary-text">Priority support</span>
-                                </div>
-                                <span class="text-xs text-secondary-text">24/7</span>
-                            </div>
-                            
-                            <div class="flex items-center justify-between pb-3 border-b border-border-color">
-                                <div class="flex items-center space-x-3">
-                                    <i class="fa-solid fa-check-circle text-success"></i>
-                                    <span class="text-sm text-primary-text">API access</span>
-                                </div>
-                                <span class="text-xs text-secondary-text">Unlimited</span>
-                            </div>
-                            
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-3">
-                                    <i class="fa-solid fa-check-circle text-success"></i>
-                                    <span class="text-sm text-primary-text">Custom branding</span>
-                                </div>
-                                <span class="text-xs text-secondary-text">Enabled</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-3 gap-6">
-                    
-                    <div class="bg-card-surface border border-border-color rounded-lg p-6">
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-lg font-semibold text-primary-text">Contact Information</h2>
-                            <button class="text-secondary-text hover:text-primary-text">
-                                <i class="fa-solid fa-pen text-sm"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <div class="text-xs text-secondary-text mb-1">Primary Contact</div>
-                                <div class="text-sm text-primary-text font-medium">John Anderson</div>
-                                <div class="text-sm text-secondary-text">CEO</div>
-                            </div>
-                            
-                            <div>
-                                <div class="text-xs text-secondary-text mb-1">Email</div>
-                                <div class="text-sm text-primary-blue">john@techcorp.com</div>
-                            </div>
-                            
-                            <div>
-                                <div class="text-xs text-secondary-text mb-1">Phone</div>
-                                <div class="text-sm text-primary-text">+1 (555) 123-4567</div>
-                            </div>
-                            
-                            <div>
-                                <div class="text-xs text-secondary-text mb-1">Address</div>
-                                <div class="text-sm text-primary-text">123 Market Street</div>
-                                <div class="text-sm text-primary-text">San Francisco, CA 94103</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-card-surface border border-border-color rounded-lg p-6">
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-lg font-semibold text-primary-text">Quota Usage</h2>
-                            <a href="#" class="text-sm text-primary-blue hover:text-hover-blue font-medium">Details</a>
-                        </div>
-                        
-                        <div class="space-y-5">
-                            <div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-sm text-primary-text">Interviews</span>
-                                    <span class="text-sm text-secondary-text">1,429 / 2,000</span>
-                                </div>
-                                <div class="w-full h-2 bg-bg-surface rounded-full overflow-hidden">
-                                    <div class="h-full bg-primary-blue rounded-full" style="width: 71.45%"></div>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-sm text-primary-text">Storage</span>
-                                    <span class="text-sm text-secondary-text">24.8 / 100 GB</span>
-                                </div>
-                                <div class="w-full h-2 bg-bg-surface rounded-full overflow-hidden">
-                                    <div class="h-full bg-success rounded-full" style="width: 24.8%"></div>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-sm text-primary-text">API Calls</span>
-                                    <span class="text-sm text-secondary-text">89.2K / 100K</span>
-                                </div>
-                                <div class="w-full h-2 bg-bg-surface rounded-full overflow-hidden">
-                                    <div class="h-full bg-warning rounded-full" style="width: 89.2%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-card-surface border border-border-color rounded-lg p-6">
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-lg font-semibold text-primary-text">Team Members</h2>
-                            <a href="#" class="text-sm text-primary-blue hover:text-hover-blue font-medium">View All</a>
-                        </div>
-                        
-                        <div class="space-y-3">
-                            <div class="flex items-center space-x-3">
-                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="User" class="w-10 h-10 rounded-full border-2 border-border-color">
-                                <div class="flex-1 min-w-0">
-                                    <div class="text-sm font-medium text-primary-text truncate">John Anderson</div>
-                                    <div class="text-xs text-secondary-text">Admin</div>
-                                </div>
-                                <div class="w-2 h-2 bg-success rounded-full"></div>
-                            </div>
-                            
-                            <div class="flex items-center space-x-3">
-                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" alt="User" class="w-10 h-10 rounded-full border-2 border-border-color">
-                                <div class="flex-1 min-w-0">
-                                    <div class="text-sm font-medium text-primary-text truncate">Sarah Johnson</div>
-                                    <div class="text-xs text-secondary-text">Manager</div>
-                                </div>
-                                <div class="w-2 h-2 bg-success rounded-full"></div>
-                            </div>
-                            
-                            <div class="flex items-center space-x-3">
-                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" alt="User" class="w-10 h-10 rounded-full border-2 border-border-color">
-                                <div class="flex-1 min-w-0">
-                                    <div class="text-sm font-medium text-primary-text truncate">Mike Chen</div>
-                                    <div class="text-xs text-secondary-text">User</div>
-                                </div>
-                                <div class="w-2 h-2 bg-secondary-text rounded-full"></div>
-                            </div>
-                            
-                            <div class="pt-3 border-t border-border-color">
-                                <div class="text-sm text-secondary-text">+244 more members</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-</div>
+    <div id="super-admin-dashboard" class="flex h-screen w-screen overflow-hidden">
 
-<script>
-document.querySelectorAll('.tab-item').forEach(tab => {
-    tab.addEventListener('click', function() {
-        document.querySelectorAll('.tab-item').forEach(t => {
-            t.classList.remove('active', 'text-primary-blue', 'border-b-2', 'border-primary-blue');
-            t.classList.add('text-secondary-text');
+        <aside id="sidebar" class="w-64 bg-card-surface border-r border-border-color flex flex-col">
+            <div class="h-16 border-b border-border-color flex items-center px-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-primary-blue rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-shield-halved text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <div class="text-primary-text text-sm font-bold">Ashish</div>
+                        <div class="text-secondary-text text-xs">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto py-4">
+                <div class="px-3 mb-6">
+                    <div class="text-xs font-semibold text-secondary-text uppercase tracking-wider mb-2 px-3">Main</div>
+                    <a href="#"
+                        class="flex items-center space-x-3 px-3 py-2 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                        <i class="fa-solid fa-chart-line w-5"></i>
+                        <span class="text-sm font-medium">Dashboard</span>
+                    </a>
+                    <a href="#"
+                        class="flex items-center space-x-3 px-3 py-2 rounded-lg bg-blue-50 text-primary-blue transition-all duration-150">
+                        <i class="fa-solid fa-building w-5"></i>
+                        <span class="text-sm font-medium">Organizations</span>
+                    </a>
+                    <a href="#"
+                        class="flex items-center space-x-3 px-3 py-2 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                        <i class="fa-solid fa-users w-5"></i>
+                        <span class="text-sm font-medium">Users</span>
+                    </a>
+                    <a href="#"
+                        class="flex items-center space-x-3 px-3 py-2 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                        <i class="fa-solid fa-credit-card w-5"></i>
+                        <span class="text-sm font-medium">Billing</span>
+                    </a>
+                </div>
+
+                <div class="px-3 mb-6">
+                    <div class="text-xs font-semibold text-secondary-text uppercase tracking-wider mb-2 px-3">System
+                    </div>
+                    <a href="#"
+                        class="flex items-center space-x-3 px-3 py-2 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                        <i class="fa-solid fa-gauge-high w-5"></i>
+                        <span class="text-sm font-medium">Performance</span>
+                    </a>
+                    <a href="#"
+                        class="flex items-center space-x-3 px-3 py-2 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                        <i class="fa-solid fa-shield-check w-5"></i>
+                        <span class="text-sm font-medium">Security</span>
+                    </a>
+                    <a href="#"
+                        class="flex items-center space-x-3 px-3 py-2 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                        <i class="fa-solid fa-clock-rotate-left w-5"></i>
+                        <span class="text-sm font-medium">Activity Logs</span>
+                    </a>
+                    <a href="#"
+                        class="flex items-center space-x-3 px-3 py-2 rounded-lg text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                        <i class="fa-solid fa-gear w-5"></i>
+                        <span class="text-sm font-medium">Settings</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="border-t border-border-color p-4">
+                <div class="flex items-center space-x-3">
+                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Admin"
+                        class="w-10 h-10 rounded-full border-2 border-border-color">
+                    <div class="flex-1 min-w-0">
+                        <div class="text-sm font-semibold text-primary-text truncate">Admin User</div>
+                        <div class="text-xs text-secondary-text truncate">admin@ashish.one</div>
+                    </div>
+                    <button class="text-secondary-text hover:text-primary-text">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <main id="main-content" class="flex-1 flex flex-col overflow-hidden">
+
+            <header id="header"
+                class="h-16 bg-card-surface border-b border-border-color flex items-center justify-between px-8">
+                <div class="flex items-center space-x-4">
+                    <button class="text-secondary-text hover:text-primary-text lg:hidden">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                    <div class="relative">
+                        <input type="text" placeholder="Search organizations, users, invoices..."
+                            class="w-96 h-10 bg-bg-surface border border-border-color rounded-lg pl-10 pr-4 text-sm text-primary-text placeholder-secondary-text focus:outline-none focus:border-primary-blue focus:ring-3 focus:ring-primary-blue focus:ring-opacity-10">
+                        <i
+                            class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-secondary-text text-sm"></i>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <button class="relative text-secondary-text hover:text-primary-text">
+                        <i class="fa-solid fa-bell text-xl"></i>
+                        <span
+                            class="absolute -top-1 -right-1 w-5 h-5 bg-error text-white text-xs rounded-full flex items-center justify-center">3</span>
+                    </button>
+                    <button class="text-secondary-text hover:text-primary-text">
+                        <i class="fa-solid fa-question-circle text-xl"></i>
+                    </button>
+                    <div class="w-px h-6 bg-border-color"></div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-success rounded-full"></div>
+                        <span class="text-sm text-secondary-text">All Systems Operational</span>
+                    </div>
+                </div>
+            </header>
+
+            <div id="page-content" class="flex-1 overflow-y-auto">
+
+                <div id="page-header-section" class="bg-card-surface border-b border-border-color">
+                    <div class="px-8 py-6">
+                        <div class="flex items-center space-x-2 text-sm text-secondary-text mb-4">
+                            <a href="#" class="hover:text-primary-blue transition-colors">Organizations</a>
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                            <span class="text-primary-text font-medium">TechCorp Solutions Inc.</span>
+                        </div>
+
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start space-x-4">
+                                <div
+                                    class="w-16 h-16 bg-gradient-to-br from-primary-blue to-hover-blue rounded-xl flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+                                    TC
+                                </div>
+
+                                <div>
+                                    <div class="flex items-center space-x-3 mb-2">
+                                        <h1 class="text-3xl font-bold text-primary-text">TechCorp Solutions Inc.</h1>
+                                        <span
+                                            class="px-3 py-1 bg-green-100 text-success text-xs font-semibold rounded-full">Active</span>
+                                        <span
+                                            class="px-3 py-1 bg-blue-100 text-primary-blue text-xs font-semibold rounded-full">Enterprise</span>
+                                    </div>
+
+                                    <div class="flex items-center space-x-6 text-sm text-secondary-text">
+                                        <a href="#"
+                                            class="flex items-center space-x-2 hover:text-primary-blue transition-colors">
+                                            <i class="fa-solid fa-globe"></i>
+                                            <span>techcorp.com</span>
+                                        </a>
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fa-solid fa-calendar"></i>
+                                            <span>Joined Jan 15, 2024</span>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fa-solid fa-map-marker-alt"></i>
+                                            <span>San Francisco, CA</span>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fa-solid fa-building"></i>
+                                            <span>ID: ORG-2847</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-3">
+                                <button
+                                    class="h-10 px-5 bg-transparent border border-primary-blue text-primary-blue text-sm font-semibold rounded-full hover:bg-primary-blue hover:bg-opacity-8 transition-all duration-150">
+                                    <i class="fa-solid fa-user-secret mr-2"></i>
+                                    Impersonate
+                                </button>
+                                <button
+                                    class="h-10 px-5 bg-primary-blue text-white text-sm font-semibold rounded-full hover:bg-hover-blue transition-all duration-150">
+                                    <i class="fa-solid fa-pen mr-2"></i>
+                                    Edit
+                                </button>
+                                <button
+                                    class="h-10 w-10 bg-transparent border border-border-color text-secondary-text rounded-full hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-navigation" class="border-t border-border-color">
+                        <div class="px-8">
+                            <div class="flex items-center space-x-1">
+                                <button
+                                    class="tab-item active h-12 px-5 text-sm font-medium text-primary-blue border-b-2 border-primary-blue transition-all duration-150">
+                                    Overview
+                                </button>
+                                <button
+                                    class="tab-item h-12 px-5 text-sm font-medium text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                                    Users
+                                </button>
+                                <button
+                                    class="tab-item h-12 px-5 text-sm font-medium text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                                    Interviews
+                                </button>
+                                <button
+                                    class="tab-item h-12 px-5 text-sm font-medium text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                                    Billing
+                                </button>
+                                <button
+                                    class="tab-item h-12 px-5 text-sm font-medium text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                                    Quotas
+                                </button>
+                                <button
+                                    class="tab-item h-12 px-5 text-sm font-medium text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                                    Settings
+                                </button>
+                                <button
+                                    class="tab-item h-12 px-5 text-sm font-medium text-secondary-text hover:bg-bg-surface hover:text-primary-text transition-all duration-150">
+                                    Activity Log
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="overview-content" class="p-8">
+
+                    <div id="summary-stats" class="grid grid-cols-4 gap-6 mb-8">
+                        <div class="bg-card-surface border border-border-color rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-users text-primary-blue text-xl"></i>
+                                </div>
+                                <span class="text-xs text-success font-semibold">+12%</span>
+                            </div>
+                            <div class="text-3xl font-bold text-primary-text mb-1">247</div>
+                            <div class="text-sm text-secondary-text">Total Users</div>
+                        </div>
+
+                        <div class="bg-card-surface border border-border-color rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-comments text-success text-xl"></i>
+                                </div>
+                                <span class="text-xs text-success font-semibold">+8%</span>
+                            </div>
+                            <div class="text-3xl font-bold text-primary-text mb-1">1,429</div>
+                            <div class="text-sm text-secondary-text">Interviews Conducted</div>
+                        </div>
+
+                        <div class="bg-card-surface border border-border-color rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-chart-line text-purple-600 text-xl"></i>
+                                </div>
+                                <span class="text-xs text-success font-semibold">+24%</span>
+                            </div>
+                            <div class="text-3xl font-bold text-primary-text mb-1">89%</div>
+                            <div class="text-sm text-secondary-text">Completion Rate</div>
+                        </div>
+
+                        <div class="bg-card-surface border border-border-color rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-dollar-sign text-warning text-xl"></i>
+                                </div>
+                                <span class="text-xs text-secondary-text">Monthly</span>
+                            </div>
+                            <div class="text-3xl font-bold text-primary-text mb-1">$4,999</div>
+                            <div class="text-sm text-secondary-text">Current MRR</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-6 mb-8">
+
+                        <div class="col-span-2 bg-card-surface border border-border-color rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-semibold text-primary-text">Usage Overview</h2>
+                                <div class="flex items-center space-x-2">
+                                    <button
+                                        class="px-3 py-1 text-xs font-medium text-secondary-text hover:text-primary-text hover:bg-bg-surface rounded-md transition-all">7D</button>
+                                    <button
+                                        class="px-3 py-1 text-xs font-medium text-secondary-text hover:text-primary-text hover:bg-bg-surface rounded-md transition-all">30D</button>
+                                    <button
+                                        class="px-3 py-1 text-xs font-medium text-white bg-primary-blue rounded-md">90D</button>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4 mb-6">
+                                <div class="bg-bg-surface rounded-lg p-4">
+                                    <div class="text-xs text-secondary-text mb-1">Interviews</div>
+                                    <div class="text-2xl font-bold text-primary-text">1,429</div>
+                                    <div class="text-xs text-success mt-1">↑ 18% vs last period</div>
+                                </div>
+                                <div class="bg-bg-surface rounded-lg p-4">
+                                    <div class="text-xs text-secondary-text mb-1">API Calls</div>
+                                    <div class="text-2xl font-bold text-primary-text">89.2K</div>
+                                    <div class="text-xs text-success mt-1">↑ 12% vs last period</div>
+                                </div>
+                                <div class="bg-bg-surface rounded-lg p-4">
+                                    <div class="text-xs text-secondary-text mb-1">Storage Used</div>
+                                    <div class="text-2xl font-bold text-primary-text">24.8 GB</div>
+                                    <div class="text-xs text-secondary-text mt-1">of 100 GB</div>
+                                </div>
+                            </div>
+
+                            <div class="h-64 bg-bg-surface rounded-lg flex items-center justify-center">
+                                <div class="text-center">
+                                    <i class="fa-solid fa-chart-area text-4xl text-secondary-text mb-3"></i>
+                                    <div class="text-sm text-secondary-text">Usage chart visualization</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-card-surface border border-border-color rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-semibold text-primary-text">Quick Actions</h2>
+                            </div>
+
+                            <div class="space-y-3">
+                                <button
+                                    class="w-full h-12 bg-primary-blue text-white text-sm font-semibold rounded-lg hover:bg-hover-blue transition-all duration-150 flex items-center justify-center space-x-2">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    <span>Send Message</span>
+                                </button>
+
+                                <button
+                                    class="w-full h-12 bg-transparent border border-border-color text-primary-text text-sm font-semibold rounded-lg hover:bg-bg-surface transition-all duration-150 flex items-center justify-center space-x-2">
+                                    <i class="fa-solid fa-file-invoice"></i>
+                                    <span>Generate Invoice</span>
+                                </button>
+
+                                <button
+                                    class="w-full h-12 bg-transparent border border-border-color text-primary-text text-sm font-semibold rounded-lg hover:bg-bg-surface transition-all duration-150 flex items-center justify-center space-x-2">
+                                    <i class="fa-solid fa-chart-simple"></i>
+                                    <span>View Reports</span>
+                                </button>
+
+                                <button
+                                    class="w-full h-12 bg-transparent border border-border-color text-primary-text text-sm font-semibold rounded-lg hover:bg-bg-surface transition-all duration-150 flex items-center justify-center space-x-2">
+                                    <i class="fa-solid fa-sliders"></i>
+                                    <span>Adjust Quotas</span>
+                                </button>
+                            </div>
+
+                            <div class="mt-6 pt-6 border-t border-border-color">
+                                <div class="text-xs font-semibold text-secondary-text uppercase mb-3">Account Health
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-primary-text">Payment Status</span>
+                                        <span
+                                            class="px-2 py-1 bg-green-100 text-success text-xs font-semibold rounded">Current</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-primary-text">Compliance</span>
+                                        <span
+                                            class="px-2 py-1 bg-green-100 text-success text-xs font-semibold rounded">Verified</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-primary-text">Support Tier</span>
+                                        <span
+                                            class="px-2 py-1 bg-purple-100 text-purple-600 text-xs font-semibold rounded">Premium</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+
+                        <div class="bg-card-surface border border-border-color rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-semibold text-primary-text">Recent Activity</h2>
+                                <a href="#" class="text-sm text-primary-blue hover:text-hover-blue font-medium">View
+                                    All</a>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-3 pb-4 border-b border-border-color">
+                                    <div
+                                        class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-user-plus text-primary-blue text-sm"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm text-primary-text mb-1">New user added</div>
+                                        <div class="text-xs text-secondary-text">Sarah Johnson joined the organization
+                                        </div>
+                                        <div class="text-xs text-secondary-text mt-1">2 hours ago</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start space-x-3 pb-4 border-b border-border-color">
+                                    <div
+                                        class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-check text-success text-sm"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm text-primary-text mb-1">Interview completed</div>
+                                        <div class="text-xs text-secondary-text">Senior Developer position - 45 min
+                                            session</div>
+                                        <div class="text-xs text-secondary-text mt-1">5 hours ago</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start space-x-3 pb-4 border-b border-border-color">
+                                    <div
+                                        class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-credit-card text-purple-600 text-sm"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm text-primary-text mb-1">Payment processed</div>
+                                        <div class="text-xs text-secondary-text">Monthly subscription - $4,999.00</div>
+                                        <div class="text-xs text-secondary-text mt-1">1 day ago</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start space-x-3 pb-4 border-b border-border-color">
+                                    <div
+                                        class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-sliders text-warning text-sm"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm text-primary-text mb-1">Quota adjusted</div>
+                                        <div class="text-xs text-secondary-text">Interview limit increased to
+                                            2,000/month</div>
+                                        <div class="text-xs text-secondary-text mt-1">2 days ago</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start space-x-3">
+                                    <div
+                                        class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-shield-check text-error text-sm"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm text-primary-text mb-1">Security update</div>
+                                        <div class="text-xs text-secondary-text">2FA enabled for all admin users</div>
+                                        <div class="text-xs text-secondary-text mt-1">3 days ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-card-surface border border-border-color rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-semibold text-primary-text">Subscription Details</h2>
+                                <button
+                                    class="text-sm text-primary-blue hover:text-hover-blue font-medium">Manage</button>
+                            </div>
+
+                            <div
+                                class="bg-gradient-to-br from-primary-blue to-hover-blue rounded-lg p-6 text-white mb-6">
+                                <div class="text-sm opacity-90 mb-2">Current Plan</div>
+                                <div class="text-2xl font-bold mb-4">Enterprise Premium</div>
+                                <div class="flex items-baseline space-x-2 mb-4">
+                                    <span class="text-4xl font-bold">$4,999</span>
+                                    <span class="text-sm opacity-90">/month</span>
+                                </div>
+                                <div
+                                    class="flex items-center justify-between pt-4 border-t border-white border-opacity-20">
+                                    <span class="text-sm">Next billing date</span>
+                                    <span class="text-sm font-semibold">Feb 15, 2024</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between pb-3 border-b border-border-color">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fa-solid fa-check-circle text-success"></i>
+                                        <span class="text-sm text-primary-text">Unlimited users</span>
+                                    </div>
+                                    <span class="text-xs text-secondary-text">Active</span>
+                                </div>
+
+                                <div class="flex items-center justify-between pb-3 border-b border-border-color">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fa-solid fa-check-circle text-success"></i>
+                                        <span class="text-sm text-primary-text">2,000 interviews/month</span>
+                                    </div>
+                                    <span class="text-xs text-secondary-text">1,429 used</span>
+                                </div>
+
+                                <div class="flex items-center justify-between pb-3 border-b border-border-color">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fa-solid fa-check-circle text-success"></i>
+                                        <span class="text-sm text-primary-text">Priority support</span>
+                                    </div>
+                                    <span class="text-xs text-secondary-text">24/7</span>
+                                </div>
+
+                                <div class="flex items-center justify-between pb-3 border-b border-border-color">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fa-solid fa-check-circle text-success"></i>
+                                        <span class="text-sm text-primary-text">API access</span>
+                                    </div>
+                                    <span class="text-xs text-secondary-text">Unlimited</span>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fa-solid fa-check-circle text-success"></i>
+                                        <span class="text-sm text-primary-text">Custom branding</span>
+                                    </div>
+                                    <span class="text-xs text-secondary-text">Enabled</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-6">
+
+                        <div class="bg-card-surface border border-border-color rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-semibold text-primary-text">Contact Information</h2>
+                                <button class="text-secondary-text hover:text-primary-text">
+                                    <i class="fa-solid fa-pen text-sm"></i>
+                                </button>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="text-xs text-secondary-text mb-1">Primary Contact</div>
+                                    <div class="text-sm text-primary-text font-medium">John Anderson</div>
+                                    <div class="text-sm text-secondary-text">CEO</div>
+                                </div>
+
+                                <div>
+                                    <div class="text-xs text-secondary-text mb-1">Email</div>
+                                    <div class="text-sm text-primary-blue">john@techcorp.com</div>
+                                </div>
+
+                                <div>
+                                    <div class="text-xs text-secondary-text mb-1">Phone</div>
+                                    <div class="text-sm text-primary-text">+1 (555) 123-4567</div>
+                                </div>
+
+                                <div>
+                                    <div class="text-xs text-secondary-text mb-1">Address</div>
+                                    <div class="text-sm text-primary-text">123 Market Street</div>
+                                    <div class="text-sm text-primary-text">San Francisco, CA 94103</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-card-surface border border-border-color rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-semibold text-primary-text">Quota Usage</h2>
+                                <a href="#"
+                                    class="text-sm text-primary-blue hover:text-hover-blue font-medium">Details</a>
+                            </div>
+
+                            <div class="space-y-5">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm text-primary-text">Interviews</span>
+                                        <span class="text-sm text-secondary-text">1,429 / 2,000</span>
+                                    </div>
+                                    <div class="w-full h-2 bg-bg-surface rounded-full overflow-hidden">
+                                        <div class="h-full bg-primary-blue rounded-full" style="width: 71.45%"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm text-primary-text">Storage</span>
+                                        <span class="text-sm text-secondary-text">24.8 / 100 GB</span>
+                                    </div>
+                                    <div class="w-full h-2 bg-bg-surface rounded-full overflow-hidden">
+                                        <div class="h-full bg-success rounded-full" style="width: 24.8%"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm text-primary-text">API Calls</span>
+                                        <span class="text-sm text-secondary-text">89.2K / 100K</span>
+                                    </div>
+                                    <div class="w-full h-2 bg-bg-surface rounded-full overflow-hidden">
+                                        <div class="h-full bg-warning rounded-full" style="width: 89.2%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-card-surface border border-border-color rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-semibold text-primary-text">Team Members</h2>
+                                <a href="#" class="text-sm text-primary-blue hover:text-hover-blue font-medium">View
+                                    All</a>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-3">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg"
+                                        alt="User" class="w-10 h-10 rounded-full border-2 border-border-color">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm font-medium text-primary-text truncate">John Anderson</div>
+                                        <div class="text-xs text-secondary-text">Admin</div>
+                                    </div>
+                                    <div class="w-2 h-2 bg-success rounded-full"></div>
+                                </div>
+
+                                <div class="flex items-center space-x-3">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg"
+                                        alt="User" class="w-10 h-10 rounded-full border-2 border-border-color">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm font-medium text-primary-text truncate">Sarah Johnson</div>
+                                        <div class="text-xs text-secondary-text">Manager</div>
+                                    </div>
+                                    <div class="w-2 h-2 bg-success rounded-full"></div>
+                                </div>
+
+                                <div class="flex items-center space-x-3">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg"
+                                        alt="User" class="w-10 h-10 rounded-full border-2 border-border-color">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm font-medium text-primary-text truncate">Mike Chen</div>
+                                        <div class="text-xs text-secondary-text">User</div>
+                                    </div>
+                                    <div class="w-2 h-2 bg-secondary-text rounded-full"></div>
+                                </div>
+
+                                <div class="pt-3 border-t border-border-color">
+                                    <div class="text-sm text-secondary-text">+244 more members</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.querySelectorAll('.tab-item').forEach(tab => {
+            tab.addEventListener('click', function () {
+                document.querySelectorAll('.tab-item').forEach(t => {
+                    t.classList.remove('active', 'text-primary-blue', 'border-b-2', 'border-primary-blue');
+                    t.classList.add('text-secondary-text');
+                });
+
+                this.classList.add('active', 'text-primary-blue', 'border-b-2', 'border-primary-blue');
+                this.classList.remove('text-secondary-text');
+            });
         });
-        
-        this.classList.add('active', 'text-primary-blue', 'border-b-2', 'border-primary-blue');
-        this.classList.remove('text-secondary-text');
-    });
-});
-</script>
+    </script>
 
 </body>
+
 </html>

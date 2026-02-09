@@ -1,6 +1,6 @@
-# Euron Nexus - AI Interview Platform
+# Ashish - AI Interview Platform
 
-![Euron Logo](https://img.shields.io/badge/Euron-Nexus-0A66C2?style=for-the-badge&logo=lightning&logoColor=white)
+![Ashish Logo](https://img.shields.io/badge/Ashish-AI-0A66C2?style=for-the-badge&logo=lightning&logoColor=white)
 
 A next-generation AI-powered interview platform that automates end-to-end hiring with intelligent resume screening, AI-driven interviews, and comprehensive analytics.
 
@@ -25,7 +25,7 @@ The application will be available at **http://localhost:3000**
 ## 📁 Project Structure
 
 ```
-euron-nexus/
+ashish/
 ├── public/
 │   ├── index.html          # Landing page
 │   ├── super-admin.html    # Super Admin Dashboard
@@ -86,7 +86,7 @@ The UI follows a professional, enterprise-grade design inspired by LinkedIn's UX
    ```bash
    # On your EC2 instance
    git clone <your-repo>
-   cd euron-nexus
+   cd ashish
    npm install
    npm start
    ```
@@ -94,7 +94,7 @@ The UI follows a professional, enterprise-grade design inspired by LinkedIn's UX
 2. **With PM2 (Production)**:
    ```bash
    npm install -g pm2
-   pm2 start server.js --name euron-nexus
+   pm2 start server.js --name ashish
    pm2 save
    ```
 
@@ -144,4 +144,4 @@ For any questions or issues, contact the development team.
 
 ---
 
-**Built with ❤️ by Euron Team**
+**Built with ❤️ by Ashish**
