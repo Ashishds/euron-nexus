@@ -1108,10 +1108,15 @@
         });
 
         // End interview
-        document.getElementById('endBtn').addEventListener('click', function () {
-            if (confirm('End this interview?')) {
-                endInterview();
-                window.location.href = '/candidate';
+        document.getElementById('endBtn').addEventListener('click', async function () {
+            if (confirm('End this interview? You will receive an AI evaluation.')) {
+                addMessage('⏳ Generating your evaluation scorecard...', false, 'Evaluator Agent');
+                await endInterview();
+                // Give user time to review the evaluation before redirecting
+                addMessage('✅ Evaluation complete! Redirecting in 10 seconds...', false, 'System');
+                setTimeout(() => {
+                    window.location.href = '/candidate';
+                }, 10000);
             }
         });
 
