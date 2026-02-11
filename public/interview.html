@@ -605,7 +605,8 @@
         let audioQueue = [];
         let isPlaying = false;
         let currentSource = null;
-        let isAiSpeaking = false;    // True while AI audio is playing
+        let isAiSpeaking = false;
+        let activeResponseId = null;  // Track current response to reject stale audio
 
         // Initialize Audio Context
         async function initAudio() {
@@ -636,24 +637,39 @@
                         const data = JSON.parse(event.data);
 
                         switch (data.type) {
-                            // AI Voice audio chunk
-                            case 'response.audio.delta':
-                                if (data.delta) queueAudio(data.delta);
+                            // New response started — track its ID
+                            case 'response.created':
+                                activeResponseId = data.response?.id || null;
+                                console.log('🆕 New response:', activeResponseId);
                                 break;
 
-                            // AI text transcript (streaming)
+                            // AI Voice audio chunk — ONLY from active response
+                            case 'response.audio.delta':
+                                if (data.delta && data.response_id === activeResponseId) {
+                                    queueAudio(data.delta);
+                                }
+                                break;
+
+                            // AI text transcript (streaming) — ONLY from active response
                             case 'response.audio_transcript.delta':
-                                if (data.delta) updateAiMessage(data.delta);
+                                if (data.delta && data.response_id === activeResponseId) {
+                                    updateAiMessage(data.delta);
+                                }
                                 break;
 
                             // AI response transcript finished
                             case 'response.audio_transcript.done':
-                                finalizeAiMessage();
+                                if (data.response_id === activeResponseId) {
+                                    finalizeAiMessage();
+                                }
                                 break;
 
                             // Entire response finished
                             case 'response.done':
-                                finalizeAiMessage();
+                                if (data.response?.id === activeResponseId) {
+                                    finalizeAiMessage();
+                                }
+                                activeResponseId = null;
                                 break;
 
                             // USER started speaking — interrupt AI immediately
@@ -711,8 +727,9 @@
             if (!isPlaying) playNextInQueue();
         }
 
-        // Interrupt AI: stop audio and clear queue
+        // Interrupt AI: stop audio, clear queue, invalidate stale response
         function interruptAiPlayback() {
+            activeResponseId = null;  // Reject any further audio from old response
             audioQueue = [];
             if (currentSource) {
                 try { currentSource.stop(); } catch (e) { }
@@ -721,7 +738,6 @@
             isPlaying = false;
             isAiSpeaking = false;
             document.getElementById('aiSpeakingIndicator').classList.add('hidden');
-            // Finalize any partial AI message
             finalizeAiMessage();
         }
 
