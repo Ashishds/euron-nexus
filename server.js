@@ -140,7 +140,7 @@ app.post('/api/chat', async (req, res) => {
         ];
 
         const completion = await openai.chat.completions.create({
-            model: 'gpt-3.5-turbo',
+            model: 'gpt-4o',
             messages: conversationMessages,
             max_tokens: 300,
             temperature: 0.7
@@ -174,7 +174,7 @@ app.post('/api/evaluate', async (req, res) => {
         let context = `Role: ${role || 'General'}\n\nInterview Transcript:\n${transcript}`;
 
         const completion = await openai.chat.completions.create({
-            model: 'gpt-4o-mini',
+            model: 'gpt-4o',
             messages: [
                 { role: 'system', content: EVALUATION_AGENT_PROMPT },
                 { role: 'user', content: context }
