@@ -209,9 +209,9 @@ const mockOrganizations = [
 
 // Mock data for interviews
 const mockInterviews = [
-    { id: 1, candidate: 'John Doe', position: 'Senior Developer', status: 'Completed', score: 85, date: '2024-01-15' },
-    { id: 2, candidate: 'Jane Smith', position: 'Product Manager', status: 'Scheduled', score: null, date: '2024-01-20' },
-    { id: 3, candidate: 'Mike Johnson', position: 'Data Analyst', status: 'In Progress', score: null, date: '2024-01-18' },
+    { id: 1, candidate: 'Ashish Singh', position: 'Senior Developer', status: 'Completed', score: 85, date: '2024-01-15' },
+    { id: 2, candidate: 'Priya Verma', position: 'Product Manager', status: 'Scheduled', score: null, date: '2024-01-20' },
+    { id: 3, candidate: 'Manoj Kumar', position: 'Data Analyst', status: 'In Progress', score: null, date: '2024-01-18' },
 ];
 
 // API Endpoints
