@@ -1,7 +1,7 @@
 {
-    "name": "ashish",
+    "name": "zoho",
     "version": "1.0.0",
-    "description": "Ashish AI Interview Platform - Demo Version",
+    "description": "Zoho AI Interview Platform - Demo Version",
     "main": "server.js",
     "scripts": {
         "start": "node server.js",
@@ -17,6 +17,6 @@
     "engines": {
         "node": ">=18.0.0"
     },
-    "author": "Ashish",
+    "author": "Zoho",
     "license": "ISC"
 }

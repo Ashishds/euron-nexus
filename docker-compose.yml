@@ -1,11 +1,11 @@
 version: '3.8'
 
 services:
-  ashish-app:
+  zoho-app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ashish
+    container_name: zoho
     restart: always
     env_file:
       - ./.env
@@ -21,11 +21,11 @@ services:
       retries: 3
       start_period: 10s
     networks:
-      - ashish-network
+      - zoho-network
 
   nginx:
     image: nginx:alpine
-    container_name: ashish-nginx
+    container_name: zoho-nginx
     restart: always
     ports:
       - "80:80"
@@ -36,18 +36,18 @@ services:
       - ./certbot/conf:/etc/letsencrypt:ro
       - ./certbot/www:/var/www/certbot:ro
     depends_on:
-      - ashish-app
+      - zoho-app
     networks:
-      - ashish-network
+      - zoho-network
   # Uncomment for SSL certificate generation
   # certbot:
   #   image: certbot/certbot
-  #   container_name: ashish-certbot
+  #   container_name: zoho-certbot
   #   volumes:
   #     - ./certbot/conf:/etc/letsencrypt
   #     - ./certbot/www:/var/www/certbot
   #   command: certonly --webroot -w /var/www/certbot --force-renewal --email your-email@example.com -d mydatainterview.in -d www.mydatainterview.in --agree-tos
 
 networks:
-  ashish-network:
+  zoho-network:
     driver: bridge
