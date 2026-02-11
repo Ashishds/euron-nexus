@@ -374,7 +374,9 @@
     </div>
 
     <script>
-        // Conversation history for OpenAI API
+        // ============================================================
+        // STATE
+        // ============================================================
         let conversationHistory = [];
         let questionCount = 0;
         let timerSeconds = 25 * 60;
@@ -384,17 +386,18 @@
 
         // Multi-Agent State
         let sessionId = null;
-        let resumeAnalysis = null;  // Agent 1 output
-        let resumeText = null;      // Raw resume text
+        let resumeAnalysis = null;
+        let resumeText = null;
         let interviewTranscript = '';
 
+        // ============================================================
+        // DOM REFERENCES
+        // ============================================================
         const chatMessages = document.getElementById('chatMessages');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
         const typingIndicator = document.getElementById('typingIndicator');
         const timerEl = document.getElementById('timer').querySelector('span');
-
-        // Resume Upload Elements
         const resumePanel = document.getElementById('resumePanel');
         const resumeDropzone = document.getElementById('resumeDropzone');
         const resumeFileInput = document.getElementById('resumeFileInput');
@@ -403,18 +406,16 @@
         const uploadSuccess = document.getElementById('uploadSuccess');
         const uploadStatus = document.getElementById('uploadStatus');
         const skillTags = document.getElementById('skillTags');
+        const evaluationPanel = document.getElementById('evaluationPanel');
 
         // ============================================================
-        // AGENT 1: RESUME UPLOAD & ANALYSIS
+        // RESUME UPLOAD & ANALYSIS
         // ============================================================
-
-        // Click to browse
         resumeDropzone.addEventListener('click', () => {
-            if (!uploadSuccess.classList.contains('hidden')) return; // Already uploaded
+            if (!uploadSuccess.classList.contains('hidden')) return;
             resumeFileInput.click();
         });
 
-        // Drag & Drop
         resumeDropzone.addEventListener('dragover', (e) => {
             e.preventDefault();
             resumeDropzone.classList.add('dragover');
@@ -429,20 +430,16 @@
             if (file) handleResumeUpload(file);
         });
 
-        // File input change
         resumeFileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) handleResumeUpload(file);
         });
 
-        // Skip resume
         document.getElementById('skipResumeBtn').addEventListener('click', () => {
             resumePanel.classList.add('hidden');
         });
 
-        // Handle resume upload + analysis
         async function handleResumeUpload(file) {
-            // Validate
             const ext = file.name.split('.').pop().toLowerCase();
             if (!['pdf', 'docx', 'doc'].includes(ext)) {
                 alert('Please upload a PDF or DOCX file.');
@@ -453,13 +450,11 @@
                 return;
             }
 
-            // Show progress
             dropzoneContent.classList.add('hidden');
             uploadProgress.classList.remove('hidden');
             uploadStatus.textContent = 'Uploading resume...';
 
             try {
-                // Step 1: Upload & extract text
                 const formData = new FormData();
                 formData.append('resume', file);
 
@@ -476,7 +471,6 @@
                 const uploadData = await uploadRes.json();
                 resumeText = uploadData.resumeText;
 
-                // Step 2: AI Agent analyzes resume
                 uploadStatus.textContent = '🤖 AI Agent analyzing resume...';
 
                 const analyzeRes = await fetch('/api/analyze-resume', {
@@ -490,12 +484,10 @@
                 const analyzeData = await analyzeRes.json();
                 resumeAnalysis = analyzeData.analysis;
 
-                // Step 3: Show success
                 uploadProgress.classList.add('hidden');
                 uploadSuccess.classList.remove('hidden');
                 resumeDropzone.classList.add('uploaded');
 
-                // Display extracted skills as tags
                 if (resumeAnalysis.skills && resumeAnalysis.skills.length > 0) {
                     skillTags.innerHTML = resumeAnalysis.skills.slice(0, 8)
                         .map(s => `<span class="skill-tag">${s}</span>`).join('');
@@ -518,10 +510,9 @@
             }
         }
 
-        // Evaluation Elements
-        const evaluationPanel = document.getElementById('evaluationPanel');
-
-        // Timer
+        // ============================================================
+        // TIMER
+        // ============================================================
         function updateTimer() {
             const minutes = Math.floor(timerSeconds / 60);
             const seconds = timerSeconds % 60;
@@ -533,246 +524,13 @@
         }
         updateTimer();
 
-        // Add message to chat
-        function addMessage(content, isUser = false, label = null) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `flex items-start space-x-3 fade-in ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
-
-            const avatar = document.createElement('div');
-            avatar.className = `w-10 h-10 ${isUser ? 'bg-success' : 'bg-primary-blue'} rounded-full flex items-center justify-center flex-shrink-0`;
-            avatar.innerHTML = `<i class="fa-solid ${isUser ? 'fa-user' : 'fa-robot'} text-white"></i>`;
-
-            const bubble = document.createElement('div');
-            bubble.className = `flex-1 ${isUser ? 'bg-primary-blue/10' : 'bg-card-surface border border-border-color'} p-4 rounded-lg max-w-xl`;
-
-            let labelHtml = '';
-            if (label) {
-                labelHtml = `<div class="flex items-center space-x-2 mb-2">
-                    <span class="px-2 py-0.5 ${label === 'Complete' ? 'bg-success/10 text-success' : 'bg-primary-blue/10 text-primary-blue'} text-xs font-semibold rounded">${label}</span>
-                </div>`;
-            }
-
-            bubble.innerHTML = `
-                ${labelHtml}
-                <p class="text-sm text-primary-text">${content}</p>
-                <p class="text-xs text-secondary-text mt-2">Just now</p>
-            `;
-
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(bubble);
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // ==========================================
-        // SIMPLE VOICE INTERVIEW SYSTEM
-        // Green mic ON = listening, Green mic OFF = not listening
-        // Works without camera - just like Zoom
-        // ==========================================
-
-        let recognition = null;
-        let isMicOn = false;  // Green mic button state
-        let isAISpeaking = false;  // Prevents listening while AI speaks
-
-        // ==========================================
-        // REALTIME VOICE API (Web Audio + WebSocket)
-        // ==========================================
-
-        let audioContext = null;
-        let audioWorkletNode = null;
-        let ws = null;
-        let isVoiceActive = false;
-        let audioQueue = [];
-        let isPlaying = false;
-        let currentSource = null;
-
-        // Initialize Audio Context on user gesture
-        async function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
-            }
-            if (audioContext.state === 'suspended') {
-                await audioContext.resume();
-            }
-        }
-
-        // Connect to WebSocket
-        function connectWebSocket() {
-            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsUrl = `${protocol}//${window.location.host}/ws/realtime?role=${encodeURIComponent(selectedRole)}&resumeContext=${encodeURIComponent(JSON.stringify(resumeAnalysis || {}))}`;
-
-            ws = new WebSocket(wsUrl);
-
-            ws.onopen = () => {
-                console.log("✅ Data Channel Open");
-                showToast("Connected to Realtime Voice Agent", "success");
-            };
-
-            ws.onmessage = async (event) => {
-                const data = JSON.parse(event.data);
-
-                // Audio Delta (AI Voice)
-                if (data.type === 'response.audio.delta' && data.delta) {
-                    queueAudio(data.delta);
-                }
-
-                // Transcription (AI Text)
-                if (data.type === 'response.audio_transcript.delta' && data.delta) {
-                    updateAiMessage(data.delta);
-                }
-
-                // Input Transcription (User Text)
-                if (data.type === 'conversation.item.input_audio_transcription.completed') {
-                    if (data.transcript) addMessage(data.transcript, true);
-                }
-
-                // Error
-                if (data.type === 'error') {
-                    console.error("AI Error:", data.error);
-                }
-            };
-
-            ws.onclose = () => {
-                console.log("⚠️ Data Channel Closed");
-                stopRecording();
-            };
-        }
-
-        // Queue audio for smooth playback
-        function queueAudio(base64Audio) {
-            audioQueue.push(base64Audio);
-            if (!isPlaying) playNextInQueue();
-        }
-
-        // Play next audio chunk
-        async function playNextInQueue() {
-            if (audioQueue.length === 0) {
-                isPlaying = false;
-                document.getElementById('aiSpeakingIndicator').classList.add('hidden');
-                return;
-            }
-
-            isPlaying = true;
-            document.getElementById('aiSpeakingIndicator').classList.remove('hidden');
-
-            const base64 = audioQueue.shift();
-            const binary = atob(base64);
-            const bytes = new Uint8Array(binary.length);
-            for (let i = 0; i < binary.length; i++) {
-                bytes[i] = binary.charCodeAt(i);
-            }
-
-            const pcm16 = new Int16Array(bytes.buffer);
-            const float32 = new Float32Array(pcm16.length);
-            for (let i = 0; i < pcm16.length; i++) {
-                float32[i] = pcm16[i] / 32768; // Convert PCM16 to Float32
-            }
-
-            const buffer = audioContext.createBuffer(1, float32.length, 24000);
-            buffer.getChannelData(0).set(float32);
-
-            currentSource = audioContext.createBufferSource();
-            currentSource.buffer = buffer;
-            currentSource.connect(audioContext.destination);
-            currentSource.start();
-
-            currentSource.onended = () => {
-                playNextInQueue();
-            };
-        }
-
-        // Start Microphone Recording
-        async function startRecording() {
-            await initAudio();
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: { sampleRate: 24000, channelCount: 1 } });
-
-            // Audio Process: ScriptProcessor (simpler for now than AudioWorklet)
-            const source = audioContext.createMediaStreamSource(stream);
-            const processor = audioContext.createScriptProcessor(4096, 1, 1);
-
-            source.connect(processor);
-            processor.connect(audioContext.destination);
-
-            processor.onaudioprocess = (e) => {
-                if (!ws || ws.readyState !== WebSocket.OPEN) return;
-
-                const inputData = e.inputBuffer.getChannelData(0);
-
-                // Downsample to PCM16
-                const pcm16 = new Int16Array(inputData.length);
-                for (let i = 0; i < inputData.length; i++) {
-                    const s = Math.max(-1, Math.min(1, inputData[i]));
-                    pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
-                }
-
-                // Convert to Base64
-                const uint8 = new Uint8Array(pcm16.buffer);
-                let binary = '';
-                for (let i = 0; i < uint8.length; i++) {
-                    binary += String.fromCharCode(uint8[i]);
-                }
-                const base64 = btoa(binary);
-
-                // Send to OpenAI
-                ws.send(JSON.stringify({
-                    type: 'input_audio_buffer.append',
-                    audio: base64
-                }));
-            };
-
-            isVoiceActive = true;
-            document.getElementById('micStatus').innerHTML = '<i class="fa-solid fa-ear-listen text-green-400 text-xs animate-pulse"></i>';
-            updateMicButton(true);
-        }
-
-        function stopRecording() {
-            if (audioContext) audioContext.close();
-            audioContext = null;
-            isVoiceActive = false;
-            if (ws) ws.close();
-            updateMicButton(false);
-            document.getElementById('micStatus').innerHTML = '<i class="fa-solid fa-microphone-slash text-red-500 text-xs"></i>';
-        }
-
-        // --- UI Helpers ---
-
-        function updateMicButton(isActive) {
-            const btn = document.getElementById('micBtn');
-            if (isActive) {
-                btn.classList.add('animate-pulse');
-                btn.innerHTML = '<i class="fa-solid fa-stop text-white text-xl"></i>';
-            } else {
-                btn.classList.remove('animate-pulse');
-                btn.innerHTML = '<i class="fa-solid fa-microphone text-white text-xl"></i>';
-            }
-        }
-
-        function turnMicOn() {
-            if (!isVoiceActive) {
-                startRecording();
-            } else {
-                stopRecording();
-            }
-        }
-
-        // Live updating AI message bubble
+        // ============================================================
+        // CHAT MESSAGE HELPERS
+        // ============================================================
         let currentAiMessageId = null;
         let currentAiMessageContent = '';
 
-        function updateAiMessage(delta) {
-            if (!currentAiMessageId) {
-                currentAiMessageId = `msg-${Date.now()}`;
-                addMessage("", false, undefined, currentAiMessageId);
-            }
-            currentAiMessageContent += delta;
-            const msgEl = document.getElementById(currentAiMessageId).querySelector('p.text-primary-text');
-            msgEl.textContent = currentAiMessageContent;
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Helper to add message with ID
         function addMessage(content, isUser = false, label = null, customId = null) {
-            // Reset AI message tracker if user speaks
             if (isUser) {
                 currentAiMessageId = null;
                 currentAiMessageContent = '';
@@ -808,8 +566,31 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
+        function updateAiMessage(delta) {
+            if (!currentAiMessageId) {
+                currentAiMessageId = `msg-${Date.now()}`;
+                addMessage('', false, null, currentAiMessageId);
+            }
+            currentAiMessageContent += delta;
+            const el = document.getElementById(currentAiMessageId);
+            if (el) {
+                const p = el.querySelector('p.text-primary-text');
+                if (p) p.textContent = currentAiMessageContent;
+            }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function finalizeAiMessage() {
+            // Store in conversation history for evaluation
+            if (currentAiMessageContent) {
+                conversationHistory.push({ role: 'assistant', content: currentAiMessageContent });
+                interviewTranscript += `AI: ${currentAiMessageContent}\n`;
+            }
+            currentAiMessageId = null;
+            currentAiMessageContent = '';
+        }
+
         function showToast(msg, type = 'info') {
-            // Simple toast implementation
             const toast = document.createElement('div');
             toast.className = `fixed bottom-4 right-4 px-4 py-2 rounded-lg text-white text-sm font-semibold z-50 ${type === 'success' ? 'bg-success' : 'bg-primary-blue'}`;
             toast.textContent = msg;
@@ -817,7 +598,268 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // Modified Start/End for Realtime
+        // ============================================================
+        // REALTIME VOICE API (Web Audio + WebSocket)
+        // ============================================================
+        let audioContext = null;
+        let ws = null;
+        let isVoiceActive = false;
+        let micStream = null;        // MediaStream from getUserMedia
+        let micSource = null;        // MediaStreamSource node
+        let micProcessor = null;     // ScriptProcessor node
+        let audioQueue = [];
+        let isPlaying = false;
+        let currentSource = null;
+
+        // Initialize Audio Context
+        async function initAudio() {
+            if (!audioContext || audioContext.state === 'closed') {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
+            }
+            if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+            }
+        }
+
+        // Connect to WebSocket and return a Promise that resolves when open
+        function connectWebSocket() {
+            return new Promise((resolve, reject) => {
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const wsUrl = `${protocol}//${window.location.host}/ws/realtime?role=${encodeURIComponent(selectedRole)}&resumeContext=${encodeURIComponent(JSON.stringify(resumeAnalysis || {}))}`;
+
+                ws = new WebSocket(wsUrl);
+
+                ws.onopen = () => {
+                    console.log('✅ WebSocket connected to Realtime API');
+                    showToast('Connected to Realtime Voice', 'success');
+                    resolve();
+                };
+
+                ws.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+
+                        switch (data.type) {
+                            // AI Voice audio chunk
+                            case 'response.audio.delta':
+                                if (data.delta) queueAudio(data.delta);
+                                break;
+
+                            // AI text transcript (streaming)
+                            case 'response.audio_transcript.delta':
+                                if (data.delta) updateAiMessage(data.delta);
+                                break;
+
+                            // AI response finished — finalize message bubble
+                            case 'response.audio_transcript.done':
+                                finalizeAiMessage();
+                                break;
+
+                            // User speech transcript
+                            case 'conversation.item.input_audio_transcription.completed':
+                                if (data.transcript && data.transcript.trim()) {
+                                    addMessage(data.transcript.trim(), true);
+                                    conversationHistory.push({ role: 'user', content: data.transcript.trim() });
+                                    interviewTranscript += `User: ${data.transcript.trim()}\n`;
+                                }
+                                break;
+
+                            // Session created/updated
+                            case 'session.created':
+                            case 'session.updated':
+                                console.log(`📋 ${data.type}`);
+                                break;
+
+                            // Error from OpenAI
+                            case 'error':
+                                console.error('❌ OpenAI Error:', data.error);
+                                showToast(`Error: ${data.error?.message || 'Unknown'}`, 'error');
+                                break;
+
+                            default:
+                                // Ignore other event types (rate_limits.updated, etc.)
+                                break;
+                        }
+                    } catch (parseErr) {
+                        console.error('Failed to parse WS message:', parseErr);
+                    }
+                };
+
+                ws.onclose = (e) => {
+                    console.log('⚠️ WebSocket closed', e.code, e.reason);
+                    ws = null;
+                };
+
+                ws.onerror = (err) => {
+                    console.error('❌ WebSocket error:', err);
+                    reject(err);
+                };
+            });
+        }
+
+        // ============================================================
+        // AUDIO PLAYBACK (AI → Speaker)
+        // ============================================================
+        function queueAudio(base64Audio) {
+            audioQueue.push(base64Audio);
+            if (!isPlaying) playNextInQueue();
+        }
+
+        async function playNextInQueue() {
+            if (audioQueue.length === 0) {
+                isPlaying = false;
+                document.getElementById('aiSpeakingIndicator').classList.add('hidden');
+                return;
+            }
+
+            isPlaying = true;
+            document.getElementById('aiSpeakingIndicator').classList.remove('hidden');
+
+            const base64 = audioQueue.shift();
+            try {
+                const binary = atob(base64);
+                const bytes = new Uint8Array(binary.length);
+                for (let i = 0; i < binary.length; i++) {
+                    bytes[i] = binary.charCodeAt(i);
+                }
+
+                const pcm16 = new Int16Array(bytes.buffer);
+                const float32 = new Float32Array(pcm16.length);
+                for (let i = 0; i < pcm16.length; i++) {
+                    float32[i] = pcm16[i] / 32768;
+                }
+
+                await initAudio();
+                const buffer = audioContext.createBuffer(1, float32.length, 24000);
+                buffer.getChannelData(0).set(float32);
+
+                currentSource = audioContext.createBufferSource();
+                currentSource.buffer = buffer;
+                currentSource.connect(audioContext.destination);
+                currentSource.onended = () => playNextInQueue();
+                currentSource.start();
+            } catch (err) {
+                console.error('Audio playback error:', err);
+                playNextInQueue(); // Skip bad chunk
+            }
+        }
+
+        // ============================================================
+        // MICROPHONE CAPTURE (Mic → OpenAI)
+        // ============================================================
+        async function startMic() {
+            await initAudio();
+
+            micStream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    channelCount: 1,
+                    sampleRate: 24000,
+                    echoCancellation: true,
+                    noiseSuppression: true
+                }
+            });
+
+            micSource = audioContext.createMediaStreamSource(micStream);
+            micProcessor = audioContext.createScriptProcessor(4096, 1, 1);
+
+            micSource.connect(micProcessor);
+            micProcessor.connect(audioContext.destination);
+
+            micProcessor.onaudioprocess = (e) => {
+                if (!ws || ws.readyState !== WebSocket.OPEN) return;
+
+                const inputData = e.inputBuffer.getChannelData(0);
+
+                // Convert Float32 → PCM16
+                const pcm16 = new Int16Array(inputData.length);
+                for (let i = 0; i < inputData.length; i++) {
+                    const s = Math.max(-1, Math.min(1, inputData[i]));
+                    pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+                }
+
+                // Convert to Base64
+                const uint8 = new Uint8Array(pcm16.buffer);
+                let binary = '';
+                for (let i = 0; i < uint8.length; i++) {
+                    binary += String.fromCharCode(uint8[i]);
+                }
+                const base64 = btoa(binary);
+
+                ws.send(JSON.stringify({
+                    type: 'input_audio_buffer.append',
+                    audio: base64
+                }));
+            };
+
+            isVoiceActive = true;
+            document.getElementById('micStatus').classList.remove('hidden');
+            document.getElementById('micStatus').innerHTML = '<i class="fa-solid fa-ear-listen text-green-400 text-xs animate-pulse"></i>';
+            console.log('🎤 Microphone started');
+        }
+
+        function stopMic() {
+            // Disconnect the ScriptProcessor (stops sending audio)
+            if (micProcessor) {
+                micProcessor.disconnect();
+                micProcessor = null;
+            }
+            if (micSource) {
+                micSource.disconnect();
+                micSource = null;
+            }
+            // Stop all tracks on the mic stream
+            if (micStream) {
+                micStream.getTracks().forEach(t => t.stop());
+                micStream = null;
+            }
+            isVoiceActive = false;
+            document.getElementById('micStatus').innerHTML = '<i class="fa-solid fa-microphone-slash text-red-500 text-xs"></i>';
+            console.log('🔇 Microphone stopped');
+        }
+
+        // turnMicOn / turnMicOff — called by the green mic button
+        function turnMicOn() {
+            startMic().catch(err => {
+                console.error('Failed to start mic:', err);
+                showToast('Microphone access denied', 'error');
+            });
+        }
+
+        function turnMicOff() {
+            stopMic();
+        }
+
+        // Full stop — kills mic + WebSocket + AudioContext
+        function fullStop() {
+            stopMic();
+            if (ws) { ws.close(); ws = null; }
+            if (audioContext && audioContext.state !== 'closed') {
+                audioContext.close();
+            }
+            audioContext = null;
+            audioQueue = [];
+            isPlaying = false;
+        }
+
+        // ============================================================
+        // MIC BUTTON UI
+        // ============================================================
+        function updateMicButton(isActive) {
+            const btn = document.getElementById('micBtn');
+            if (isActive) {
+                btn.classList.remove('bg-error');
+                btn.classList.add('bg-success', 'animate-pulse');
+                btn.innerHTML = '<i class="fa-solid fa-microphone text-white text-xl"></i>';
+            } else {
+                btn.classList.remove('bg-success', 'animate-pulse');
+                btn.classList.add('bg-error');
+                btn.innerHTML = '<i class="fa-solid fa-microphone-slash text-white text-xl"></i>';
+            }
+        }
+
+        // ============================================================
+        // INTERVIEW LIFECYCLE
+        // ============================================================
         async function startInterview() {
             if (isInterviewStarted) return;
             isInterviewStarted = true;
@@ -828,137 +870,238 @@
             document.getElementById('startInterviewBtn').innerHTML = '<i class="fa-solid fa-check mr-2"></i>In Progress';
             document.getElementById('interviewTitle').textContent = `${selectedRole} Interview`;
 
-            // Connect Realtime API
-            connectWebSocket();
+            try {
+                // 1. Connect WebSocket FIRST (wait until it's open)
+                await connectWebSocket();
 
-            // Auto-start mic
-            await startRecording();
+                // 2. THEN start microphone (so audio actually gets sent)
+                await startMic();
+                updateMicButton(true);
+
+                showToast('Interview started — speak now!', 'success');
+            } catch (err) {
+                console.error('Failed to start interview:', err);
+                showToast('Failed to connect. Is the server running locally?', 'error');
+                isInterviewStarted = false;
+                document.getElementById('startInterviewBtn').disabled = false;
+                document.getElementById('startInterviewBtn').classList.remove('bg-gray-400');
+                document.getElementById('startInterviewBtn').innerHTML = '<i class="fa-solid fa-play mr-2"></i>Start Interview';
+            }
         }
 
         async function endInterview() {
             isInterviewComplete = true;
-            stopRecording();
+            fullStop();
+            updateMicButton(false);
             messageInput.disabled = true;
             sendBtn.disabled = true;
-            messageInput.placeholder = "Interview completed.";
+            messageInput.placeholder = 'Interview completed.';
 
-            // Trigger Evaluation (still uses Agent 3 via HTTP)
-            const transcript = conversationHistory.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n');
-            const response = await fetch('/api/evaluate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ sessionId, transcript, role: selectedRole, resumeAnalysis })
-            });
-
-            const data = await response.json();
-            if (data.success && data.evaluation) {
-                displayEvaluation(data.evaluation);
-            }
-        }
-
-        // Camera Logic
-        let mediaStream = null;
-
-        async function startCamera() {
-            if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
-                console.warn("Camera/Mic requires HTTPS");
-            }
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                mediaStream = stream;
-
-                const videoEl = document.getElementById('localVideo');
-                videoEl.srcObject = stream;
-
-                videoEl.classList.remove('hidden');
-                document.getElementById('cameraPlaceholder').classList.add('hidden');
-
-                const videoBtn = document.getElementById('videoBtn');
-                videoBtn.classList.add('bg-primary-blue');
-                videoBtn.classList.remove('bg-error');
-
+                const response = await fetch('/api/evaluate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sessionId,
+                        transcript: interviewTranscript,
+                        role: selectedRole,
+                        resumeAnalysis
+                    })
+                });
+                const data = await response.json();
+                if (data.success && data.evaluation) {
+                    displayEvaluation(data.evaluation);
+                }
             } catch (err) {
-                console.error("Camera fail:", err);
-                // Fallback to audio only? We handle that in startRecording for the mic.
-                // For the camera UI, just leave it as placeholder.
-                alert("Camera access denied or not available. Voice will still work.");
+                console.error('Evaluation failed:', err);
             }
         }
 
-        // Toggle mic button
-        document.getElementById('micBtn').addEventListener('click', function () {
-            const isMuted = this.classList.contains('bg-error'); // Currently red/off
+        // ============================================================
+        // TEXT MESSAGE FALLBACK (Send button / Enter key)
+        // ============================================================
+        async function sendTextMessage() {
+            const text = messageInput.value.trim();
+            if (!text || isInterviewComplete) return;
 
-            // Toggle generic mic state
-            if (isMuted) {
-                // Switching to ON (Green)
-                this.classList.remove('bg-error');
-                this.classList.add('bg-success');
-                this.innerHTML = '<i class="fa-solid fa-microphone text-white text-xl"></i>';
-                turnMicOn();
+            addMessage(text, true);
+            conversationHistory.push({ role: 'user', content: text });
+            interviewTranscript += `User: ${text}\n`;
+            messageInput.value = '';
+
+            // If WebSocket is connected, send as conversation item
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'conversation.item.create',
+                    item: {
+                        type: 'message',
+                        role: 'user',
+                        content: [{ type: 'input_text', text: text }]
+                    }
+                }));
+                ws.send(JSON.stringify({ type: 'response.create' }));
             } else {
-                // Switching to OFF (Red)
-                this.classList.remove('bg-success');
-                this.classList.add('bg-error');
-                this.innerHTML = '<i class="fa-solid fa-microphone-slash text-white text-xl"></i>';
-                turnMicOff();
+                // Fallback to HTTP chat API
+                typingIndicator.classList.remove('hidden');
+                try {
+                    const response = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            messages: conversationHistory,
+                            role: selectedRole,
+                            resumeContext: resumeAnalysis
+                        })
+                    });
+                    const data = await response.json();
+                    typingIndicator.classList.add('hidden');
+                    if (data.response) {
+                        addMessage(data.response);
+                        conversationHistory.push({ role: 'assistant', content: data.response });
+                        interviewTranscript += `AI: ${data.response}\n`;
+                    }
+                } catch (err) {
+                    typingIndicator.classList.add('hidden');
+                    console.error('Chat error:', err);
+                }
+            }
+        }
+
+        sendBtn.addEventListener('click', sendTextMessage);
+        messageInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendTextMessage();
             }
         });
 
-        // Toggle video button
-        document.getElementById('videoBtn').addEventListener('click', function () {
-            const isVideoOff = this.classList.contains('bg-error');
+        // ============================================================
+        // EVALUATION DISPLAY
+        // ============================================================
+        function displayEvaluation(evaluation) {
+            evaluationPanel.classList.remove('hidden');
 
-            if (mediaStream) {
-                mediaStream.getVideoTracks().forEach(track => track.enabled = isVideoOff);
+            const recBadge = document.getElementById('recommendationBadge');
+            if (recBadge && evaluation.recommendation) {
+                recBadge.textContent = evaluation.recommendation;
+                const rec = evaluation.recommendation.toLowerCase();
+                if (rec.includes('strong recommend')) {
+                    recBadge.className = 'text-sm font-medium mt-2 px-4 py-1 rounded-full inline-block bg-success/20 text-success';
+                } else if (rec.includes('not recommend')) {
+                    recBadge.className = 'text-sm font-medium mt-2 px-4 py-1 rounded-full inline-block bg-error/20 text-error';
+                } else {
+                    recBadge.className = 'text-sm font-medium mt-2 px-4 py-1 rounded-full inline-block bg-primary-blue/20 text-primary-blue';
+                }
             }
 
-            if (isVideoOff) {
-                this.classList.remove('bg-error');
-                this.classList.add('bg-primary-blue');
-                this.innerHTML = '<i class="fa-solid fa-video text-white text-xl"></i>';
-                if (mediaStream) {
+            const scorecardGrid = document.getElementById('scorecardGrid');
+            if (scorecardGrid && evaluation.scorecard) {
+                scorecardGrid.innerHTML = '';
+                const labels = {
+                    system_design: 'System Design',
+                    technical_depth: 'Technical Depth',
+                    communication: 'Communication',
+                    confidence: 'Confidence',
+                    problem_solving: 'Problem Solving',
+                    leadership: 'Leadership',
+                    resume_consistency: 'Resume Consistency'
+                };
+                for (const [key, val] of Object.entries(evaluation.scorecard)) {
+                    const label = labels[key] || key;
+                    const score = parseInt(val) || 0;
+                    const color = score >= 4 ? 'text-success' : score >= 3 ? 'text-warning' : 'text-error';
+                    scorecardGrid.innerHTML += `
+                        <div class="flex items-center justify-between bg-bg-surface rounded-lg p-2">
+                            <span class="text-xs text-primary-text">${label}</span>
+                            <span class="text-sm font-bold ${color}">${score}/5</span>
+                        </div>`;
+                }
+            }
+
+            const summaryEl = document.getElementById('evaluationSummary');
+            if (summaryEl && evaluation.summary) {
+                summaryEl.textContent = evaluation.summary;
+            }
+        }
+
+        // ============================================================
+        // CAMERA
+        // ============================================================
+        let cameraStream = null;
+
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                cameraStream = stream;
+                const videoEl = document.getElementById('localVideo');
+                videoEl.srcObject = stream;
+                videoEl.classList.remove('hidden');
+                document.getElementById('cameraPlaceholder').classList.add('hidden');
+            } catch (err) {
+                console.error('Camera fail:', err);
+            }
+        }
+
+        // ============================================================
+        // BUTTON EVENT LISTENERS
+        // ============================================================
+
+        // Mic toggle
+        document.getElementById('micBtn').addEventListener('click', function () {
+            if (!isInterviewStarted) return;
+            if (isVoiceActive) {
+                turnMicOff();
+                updateMicButton(false);
+            } else {
+                turnMicOn();
+                updateMicButton(true);
+            }
+        });
+
+        // Video toggle
+        document.getElementById('videoBtn').addEventListener('click', function () {
+            if (cameraStream) {
+                const tracks = cameraStream.getVideoTracks();
+                const isEnabled = tracks[0]?.enabled;
+                tracks.forEach(t => t.enabled = !isEnabled);
+
+                if (isEnabled) {
+                    this.classList.remove('bg-primary-blue');
+                    this.classList.add('bg-error');
+                    this.innerHTML = '<i class="fa-solid fa-video-slash text-white text-xl"></i>';
+                    document.getElementById('localVideo').classList.add('hidden');
+                    document.getElementById('cameraPlaceholder').classList.remove('hidden');
+                } else {
+                    this.classList.remove('bg-error');
+                    this.classList.add('bg-primary-blue');
+                    this.innerHTML = '<i class="fa-solid fa-video text-white text-xl"></i>';
                     document.getElementById('localVideo').classList.remove('hidden');
                     document.getElementById('cameraPlaceholder').classList.add('hidden');
                 }
             } else {
-                this.classList.remove('bg-primary-blue');
-                this.classList.add('bg-error');
-                this.innerHTML = '<i class="fa-solid fa-video-slash text-white text-xl"></i>';
-                document.getElementById('localVideo').classList.add('hidden');
-                document.getElementById('cameraPlaceholder').classList.remove('hidden');
-                document.getElementById('cameraPlaceholder').innerText = "Camera Paused";
+                startCamera();
             }
         });
 
-        // End interview button
+        // End interview
         document.getElementById('endBtn').addEventListener('click', function () {
-            if (confirm('Are you sure you want to end this interview?')) {
+            if (confirm('End this interview?')) {
                 endInterview();
                 window.location.href = '/candidate';
             }
         });
 
-        // Voice record button (Text input mic icon)
-        // We can just hide it or map it to the main mic toggle
+        // Hide legacy voice record button
         const voiceRecordBtn = document.getElementById('voiceRecordBtn');
-        if (voiceRecordBtn) {
-            voiceRecordBtn.style.display = 'none'; // Hide it to avoid confusion with Realtime API
-        }
+        if (voiceRecordBtn) voiceRecordBtn.style.display = 'none';
 
-        // Role selector change handler
-        const roleSelector = document.getElementById('roleSelector');
-        if (roleSelector) {
-            roleSelector.addEventListener('change', function () {
-                selectedRole = this.value;
-            });
-        }
+        // Role selector
+        document.getElementById('roleSelector')?.addEventListener('change', function () {
+            selectedRole = this.value;
+        });
 
-        // Start Interview button handler
-        const startBtn = document.getElementById('startInterviewBtn');
-        if (startBtn) {
-            startBtn.addEventListener('click', startInterview);
-        }
+        // Start button
+        document.getElementById('startInterviewBtn')?.addEventListener('click', startInterview);
     </script>
 </body>
 
