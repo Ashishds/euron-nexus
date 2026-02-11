@@ -3,7 +3,14 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const http = require('http');
 const OpenAI = require('openai');
+const multer = require('multer');
+const pdfParse = require('pdf-parse');
+const mammoth = require('mammoth');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const WebSocket = require('ws');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,8 +20,90 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 });
 
-// Role-specific interview prompts
-// ZOHO - Advanced Interviewer System Prompt (v1.0)
+// ============================================================
+// SECURITY MIDDLEWARE
+// ============================================================
+app.use(helmet({
+    contentSecurityPolicy: false, // Disable CSP for CDN scripts (Tailwind, FontAwesome)
+    crossOriginEmbedderPolicy: false
+}));
+
+// Rate limiting: 100 requests per 15 minutes per IP
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: { error: 'Too many requests. Please try again in a few minutes.' },
+    standardHeaders: true,
+    legacyHeaders: false
+});
+app.use('/api/', apiLimiter);
+
+// ============================================================
+// FILE UPLOAD CONFIG (Resume)
+// ============================================================
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, uploadDir),
+    filename: (req, file, cb) => {
+        const uniqueName = `resume_${Date.now()}_${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
+        cb(null, uniqueName);
+    }
+});
+
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+    fileFilter: (req, file, cb) => {
+        const allowed = ['.pdf', '.docx', '.doc'];
+        const ext = path.extname(file.originalname).toLowerCase();
+        if (allowed.includes(ext)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only PDF and DOCX files are accepted'));
+        }
+    }
+});
+
+// ============================================================
+// AGENT PROMPTS
+// ============================================================
+
+// AGENT 1: RESUME ANALYZER AGENT
+const RESUME_ANALYZER_PROMPT = `You are a Resume Analysis Agent for Zoho AI Interview Platform.
+Your job is to deeply analyze a candidate's resume and extract structured information that will help the Interviewer Agent ask targeted, personalized questions.
+
+ANALYSIS REQUIREMENTS:
+1. Extract ALL technical skills mentioned (languages, frameworks, tools, databases, cloud services).
+2. Identify key projects with their tech stacks and the candidate's specific contributions.
+3. Spot experience gaps, career transitions, or inconsistencies that should be explored.
+4. Generate 3-5 targeted interview questions based on specific resume claims.
+
+OUTPUT FORMAT (JSON Only):
+{
+  "candidate_name": "Name from resume",
+  "experience_years": "X years",
+  "skills": ["skill1", "skill2", "skill3"],
+  "key_projects": [
+    {
+      "name": "Project Name",
+      "tech_stack": ["tech1", "tech2"],
+      "contribution": "What they did",
+      "question_angle": "What to probe deeper on"
+    }
+  ],
+  "experience_summary": "2-3 sentence summary of their career path",
+  "strengths": ["strength1", "strength2"],
+  "areas_to_probe": ["gap1", "gap2"],
+  "targeted_questions": [
+    "Specific question about their resume claim 1",
+    "Specific question about their project 2",
+    "Specific question about a skill they listed"
+  ]
+}`;
+
+// AGENT 2: INTERVIEWER AGENT (Enhanced with Resume Context)
 const BASE_SYSTEM_PROMPT = `You are "Zoho", an expert AI interviewer working for Engagesphere Technology.
 Your goal is to conduct a professional, structured, and insightful interview for the {{ROLE}} position.
 
@@ -31,6 +120,8 @@ INTERVIEW PROTOCOL:
 3.  **Role Context**: You are interviewing a {{ROLE}}. Tailor questions to this domain.
 4.  **No Repetition**: Do not start every sentence with "Great" or "That's interesting". Vary your openers.
 5.  **Listening**: Reference specific details the candidate mentioned to show you are listening.
+
+{{RESUME_CONTEXT}}
 
 INTERVIEW STAGES (Dynamically Manage This Flow):
 - **Stage 1: Introduction**: Warm greeting, valid ID check (simulated), brief background loop.
@@ -75,19 +166,21 @@ const ROLE_PROMPTS = {
     }
 };
 
-// Evaluation Agent Prompt
-// Evaluation Agent Prompt (Aligned with Zoho Transparent Feedback Policy)
+// AGENT 3: EVALUATION AGENT (Enhanced with Resume Verification)
 const EVALUATION_AGENT_PROMPT = `You are an Interview Evaluation Agent for Zoho.
 Your goal is to provide a transparent, constructive, and comprehensive evaluation of the candidate's performance.
 
 CRITERIA:
 Rate each skill area from 1 (Poor) to 5 (Excellent).
 
+{{RESUME_EVAL_CONTEXT}}
+
 FEEDBACK GUIDELINES (Critical):
 - Be Specific: Quote exactly what they said or did.
 - Be Constructive: If they failed, explain WHY and WHAT they should study next.
 - No "Form Letters": Write as if you are giving personal advice to a colleague.
 - Tone: Professional, honest, but encouraging.
+- Resume Verification: If resume data is available, assess whether the candidate's answers were consistent with their resume claims. Flag any discrepancies.
 
 OUTPUT FORMAT (JSON Only):
 {
@@ -97,26 +190,124 @@ OUTPUT FORMAT (JSON Only):
     "communication": 1-5,
     "confidence": 1-5,
     "problem_solving": 1-5,
-    "leadership": 1-5
+    "leadership": 1-5,
+    "resume_consistency": 1-5
   },
-  "summary": "A 5-8 sentence narrative summary. Start with strengths, then address gaps clearly.",
-  "recommendation": "Strong Recommend / Recommend / Maybe / Not Recommend"
+  "summary": "A 5-8 sentence narrative summary. Start with strengths, then address gaps clearly. Include whether the candidate's answers matched their resume claims.",
+  "recommendation": "Strong Recommend / Recommend / Maybe / Not Recommend",
+  "resume_verification": "Brief assessment of how well the candidate backed up their resume claims during the interview."
 }`;
 
-// Middleware
+// ============================================================
+// MIDDLEWARE
+// ============================================================
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// API Routes
+// ============================================================
+// API ROUTES
+// ============================================================
+
+// Health Check
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'healthy', timestamp: new Date().toISOString() });
+    res.json({ status: 'healthy', timestamp: new Date().toISOString(), agents: ['resume-analyzer', 'interviewer', 'evaluator'] });
 });
 
-// OpenAI Chat Endpoint with Role Support
+// ============================================================
+// AGENT 1: RESUME UPLOAD & ANALYSIS
+// ============================================================
+
+// Step 1: Upload Resume (extract text)
+app.post('/api/upload-resume', upload.single('resume'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+
+        const filePath = req.file.path;
+        const ext = path.extname(req.file.originalname).toLowerCase();
+        let resumeText = '';
+
+        if (ext === '.pdf') {
+            const dataBuffer = fs.readFileSync(filePath);
+            const pdfData = await pdfParse(dataBuffer);
+            resumeText = pdfData.text;
+        } else if (ext === '.docx' || ext === '.doc') {
+            const result = await mammoth.extractRawText({ path: filePath });
+            resumeText = result.value;
+        }
+
+        // Clean up uploaded file
+        fs.unlinkSync(filePath);
+
+        if (!resumeText || resumeText.trim().length < 50) {
+            return res.status(400).json({ error: 'Could not extract meaningful text from resume. Please ensure it is not a scanned image.' });
+        }
+
+        res.json({
+            success: true,
+            resumeText: resumeText.trim(),
+            charCount: resumeText.trim().length
+        });
+
+    } catch (error) {
+        console.error('Resume upload error:', error);
+        if (error.message === 'Only PDF and DOCX files are accepted') {
+            return res.status(400).json({ error: error.message });
+        }
+        res.status(500).json({ error: 'Failed to process resume', details: error.message });
+    }
+});
+
+// Step 2: Analyze Resume (AI Agent)
+app.post('/api/analyze-resume', async (req, res) => {
+    try {
+        const { resumeText } = req.body;
+
+        if (!resumeText) {
+            return res.status(400).json({ error: 'No resume text provided' });
+        }
+
+        if (!process.env.OPENAI_API_KEY) {
+            return res.status(500).json({ error: 'OpenAI API key not configured' });
+        }
+
+        // Agent 1: Resume Analyzer — uses gpt-4o-mini (fast, cost-effective for parsing)
+        const completion = await openai.chat.completions.create({
+            model: 'gpt-4o-mini',
+            messages: [
+                { role: 'system', content: RESUME_ANALYZER_PROMPT },
+                { role: 'user', content: `Analyze this resume:\n\n${resumeText}` }
+            ],
+            max_tokens: 1500,
+            temperature: 0.3
+        });
+
+        let analysis;
+        try {
+            const responseText = completion.choices[0].message.content;
+            const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+            analysis = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(responseText);
+        } catch (parseError) {
+            analysis = { error: 'Could not parse analysis', raw: completion.choices[0].message.content };
+        }
+
+        res.json({ success: true, analysis });
+
+    } catch (error) {
+        console.error('Resume analysis error:', error);
+        res.status(500).json({ error: 'Failed to analyze resume', details: error.message });
+    }
+});
+
+// ============================================================
+// AGENT 2: INTERVIEWER (Enhanced with Resume Context)
+// ============================================================
+
 app.post('/api/chat', async (req, res) => {
     try {
-        const { messages, role } = req.body;
+        const { messages, role, resumeContext } = req.body;
 
         // Get role-specific prompt or default
         const roleConfig = ROLE_PROMPTS[role] || ROLE_PROMPTS['default'];
@@ -127,11 +318,33 @@ app.post('/api/chat', async (req, res) => {
 
         // If no messages, this is the start of interview - return greeting
         if (!messages || messages.length === 0) {
+            // If resume context exists, personalize the greeting
+            if (resumeContext && resumeContext.candidate_name) {
+                const personalGreeting = `Hello ${resumeContext.candidate_name}, welcome to Zoho. I'm Zoho, and I'll be conducting your ${roleConfig.role} interview today. I've reviewed your resume — I can see you have experience with ${resumeContext.skills ? resumeContext.skills.slice(0, 3).join(', ') : 'relevant technologies'}. Let's dive in! Could you start by giving me a brief overview of your career journey?`;
+                return res.json({ response: personalGreeting });
+            }
             return res.json({ response: roleConfig.greeting });
         }
 
         // Generate dynamic system prompt by injecting role
-        const systemPrompt = BASE_SYSTEM_PROMPT.replace(/{{ROLE}}/g, roleConfig.role || role);
+        let systemPrompt = BASE_SYSTEM_PROMPT.replace(/{{ROLE}}/g, roleConfig.role || role);
+
+        // Inject resume context if available
+        if (resumeContext) {
+            const resumeSection = `
+RESUME CONTEXT (Use this to ask personalized questions):
+- Candidate: ${resumeContext.candidate_name || 'Unknown'}
+- Experience: ${resumeContext.experience_years || 'Unknown'}
+- Key Skills: ${resumeContext.skills ? resumeContext.skills.join(', ') : 'Not available'}
+- Projects: ${resumeContext.key_projects ? resumeContext.key_projects.map(p => `${p.name} (${p.tech_stack ? p.tech_stack.join(', ') : ''})`).join('; ') : 'Not available'}
+- Areas to Probe: ${resumeContext.areas_to_probe ? resumeContext.areas_to_probe.join(', ') : 'None identified'}
+- Targeted Questions to Ask: ${resumeContext.targeted_questions ? resumeContext.targeted_questions.join(' | ') : 'None'}
+
+IMPORTANT: Use the resume context naturally. Reference their specific projects/skills when asking questions. Example: "You mentioned working on [Project X] with [Tech Y], can you tell me more about the challenges you faced?"`;
+            systemPrompt = systemPrompt.replace('{{RESUME_CONTEXT}}', resumeSection);
+        } else {
+            systemPrompt = systemPrompt.replace('{{RESUME_CONTEXT}}', '');
+        }
 
         // Build conversation with dynamic system prompt
         const conversationMessages = [
@@ -139,6 +352,7 @@ app.post('/api/chat', async (req, res) => {
             ...messages
         ];
 
+        // Agent 2: Interviewer — uses gpt-4o (best quality for real-time interview conversation)
         const completion = await openai.chat.completions.create({
             model: 'gpt-4o',
             messages: conversationMessages,
@@ -161,22 +375,44 @@ app.get('/api/roles', (req, res) => {
     res.json({ roles });
 });
 
-// Evaluation Endpoint
+// ============================================================
+// AGENT 3: EVALUATOR (Enhanced with Resume Verification)
+// ============================================================
+
 app.post('/api/evaluate', async (req, res) => {
     try {
-        const { transcript, role } = req.body;
+        const { transcript, role, resumeAnalysis } = req.body;
 
         if (!process.env.OPENAI_API_KEY) {
             return res.status(500).json({ error: 'OpenAI API key not configured' });
         }
 
+        // Build evaluation prompt with resume context
+        let evalPrompt = EVALUATION_AGENT_PROMPT;
+
+        if (resumeAnalysis) {
+            const resumeEvalSection = `
+RESUME DATA FOR VERIFICATION:
+The candidate's resume claims the following:
+- Skills: ${resumeAnalysis.skills ? resumeAnalysis.skills.join(', ') : 'N/A'}
+- Projects: ${resumeAnalysis.key_projects ? resumeAnalysis.key_projects.map(p => p.name).join(', ') : 'N/A'}
+- Experience: ${resumeAnalysis.experience_summary || 'N/A'}
+- Strengths (from resume): ${resumeAnalysis.strengths ? resumeAnalysis.strengths.join(', ') : 'N/A'}
+
+IMPORTANT: Compare these claims against the candidate's actual interview answers. Did they demonstrate genuine knowledge of the skills and projects they listed? Score "resume_consistency" accordingly.`;
+            evalPrompt = evalPrompt.replace('{{RESUME_EVAL_CONTEXT}}', resumeEvalSection);
+        } else {
+            evalPrompt = evalPrompt.replace('{{RESUME_EVAL_CONTEXT}}', 'Note: No resume data available for this candidate. Skip resume_consistency scoring and set it to null.');
+        }
+
         // Build context
         let context = `Role: ${role || 'General'}\n\nInterview Transcript:\n${transcript}`;
 
+        // Agent 3: Evaluator — uses gpt-4o-mini (cost-effective for post-interview analysis)
         const completion = await openai.chat.completions.create({
-            model: 'gpt-4o',
+            model: 'gpt-4o-mini',
             messages: [
-                { role: 'system', content: EVALUATION_AGENT_PROMPT },
+                { role: 'system', content: evalPrompt },
                 { role: 'user', content: context }
             ],
             max_tokens: 1000,
@@ -200,6 +436,10 @@ app.post('/api/evaluate', async (req, res) => {
     }
 });
 
+// ============================================================
+// MOCK DATA & STATIC ROUTES
+// ============================================================
+
 const mockOrganizations = [
     { id: 1, name: 'TechCorp Solutions', plan: 'Enterprise', status: 'Active', users: 47, interviews: 1247, mrr: 2499 },
     { id: 2, name: 'Global Innovations Inc', plan: 'Growth', status: 'Active', users: 18, interviews: 892, mrr: 999 },
@@ -207,7 +447,6 @@ const mockOrganizations = [
     { id: 4, name: 'CloudScale Systems', plan: 'Enterprise', status: 'Active', users: 92, interviews: 2156, mrr: 4999 },
 ];
 
-// Mock data for interviews
 const mockInterviews = [
     { id: 1, candidate: 'Ashish Singh', position: 'Senior Developer', status: 'Completed', score: 85, date: '2024-01-15' },
     { id: 2, candidate: 'Priya Verma', position: 'Product Manager', status: 'Scheduled', score: null, date: '2024-01-20' },
@@ -264,31 +503,149 @@ app.get('/candidate', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'candidate-portal.html'));
 });
 
+// ============================================================
+// OPENAI REALTIME VOICE API (WebSocket Relay)
+// ============================================================
+
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server, path: '/ws/realtime' });
+
+wss.on('connection', (clientWs, req) => {
+    console.log('\n🎙️  Client connected to Realtime Voice API');
+
+    // Parse query params for role and resume context
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const role = url.searchParams.get('role') || 'Senior Software Developer';
+    const resumeContextParam = url.searchParams.get('resumeContext');
+    let resumeContext = null;
+    try {
+        if (resumeContextParam) resumeContext = JSON.parse(decodeURIComponent(resumeContextParam));
+    } catch (e) { /* ignore parse errors */ }
+
+    // Connect to OpenAI Realtime API
+    const openaiWs = new WebSocket('wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview', {
+        headers: {
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'OpenAI-Beta': 'realtime=v1'
+        }
+    });
+
+    openaiWs.on('open', () => {
+        console.log('✅ Connected to OpenAI Realtime API');
+
+        // Build system instructions with role and resume context
+        const roleConfig = ROLE_PROMPTS[role] || ROLE_PROMPTS['default'];
+        let instructions = BASE_SYSTEM_PROMPT.replace(/{{ROLE}}/g, roleConfig.role || role);
+
+        if (resumeContext) {
+            const resumeSection = `
+RESUME CONTEXT (Use this to ask personalized questions):
+- Candidate: ${resumeContext.candidate_name || 'Unknown'}
+- Key Skills: ${resumeContext.skills ? resumeContext.skills.join(', ') : 'Not available'}
+- Projects: ${resumeContext.key_projects ? resumeContext.key_projects.map(p => p.name).join(', ') : 'Not available'}
+- Areas to Probe: ${resumeContext.areas_to_probe ? resumeContext.areas_to_probe.join(', ') : 'None'}
+IMPORTANT: Reference their specific projects and skills naturally during the interview.`;
+            instructions = instructions.replace('{{RESUME_CONTEXT}}', resumeSection);
+        } else {
+            instructions = instructions.replace('{{RESUME_CONTEXT}}', '');
+        }
+
+        // Configure the Realtime session
+        const sessionConfig = {
+            type: 'session.update',
+            session: {
+                modalities: ['text', 'audio'],
+                instructions: instructions,
+                voice: 'alloy',
+                input_audio_format: 'pcm16',
+                output_audio_format: 'pcm16',
+                input_audio_transcription: {
+                    model: 'whisper-1'
+                },
+                turn_detection: {
+                    type: 'server_vad',
+                    threshold: 0.5,
+                    prefix_padding_ms: 300,
+                    silence_duration_ms: 500
+                }
+            }
+        };
+
+        openaiWs.send(JSON.stringify(sessionConfig));
+        console.log(`🎯 Session configured for role: ${role}, voice: alloy`);
+    });
+
+    // Relay: OpenAI → Client
+    openaiWs.on('message', (data) => {
+        try {
+            if (clientWs.readyState === WebSocket.OPEN) {
+                clientWs.send(data.toString());
+            }
+        } catch (e) {
+            console.error('Error relaying to client:', e.message);
+        }
+    });
+
+    // Relay: Client → OpenAI
+    clientWs.on('message', (data) => {
+        try {
+            if (openaiWs.readyState === WebSocket.OPEN) {
+                openaiWs.send(data.toString());
+            }
+        } catch (e) {
+            console.error('Error relaying to OpenAI:', e.message);
+        }
+    });
+
+    // Handle disconnections
+    clientWs.on('close', () => {
+        console.log('🔌 Client disconnected');
+        if (openaiWs.readyState === WebSocket.OPEN) openaiWs.close();
+    });
+
+    openaiWs.on('close', () => {
+        console.log('🔌 OpenAI Realtime disconnected');
+        if (clientWs.readyState === WebSocket.OPEN) clientWs.close();
+    });
+
+    openaiWs.on('error', (err) => {
+        console.error('❌ OpenAI Realtime error:', err.message);
+        if (clientWs.readyState === WebSocket.OPEN) {
+            clientWs.send(JSON.stringify({ type: 'error', error: { message: 'OpenAI Realtime connection failed: ' + err.message } }));
+        }
+    });
+
+    clientWs.on('error', (err) => {
+        console.error('❌ Client WebSocket error:', err.message);
+    });
+});
+
 // Start server (Only if running directly, not when imported by Vercel)
 if (require.main === module) {
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
         console.log(`
 ╔════════════════════════════════════════════════════════════╗
 ║                                                            ║
 ║        🚀 ZOHO - AI Interview Platform                     ║
+║        🤖 Multi-Agent Architecture v3.0                    ║
 ║                                                            ║
 ║        Server running at: http://localhost:${PORT}            ║
 ║                                                            ║
+║        AI Agents:                                          ║
+║        • Agent 1: Resume Analyzer   (GPT-4o-mini)          ║
+║        • Agent 2: Interviewer       (GPT-4o)               ║
+║        • Agent 3: Evaluator         (GPT-4o-mini)          ║
+║        • Voice:   Realtime API      (GPT-4o-realtime)      ║
+║                                                            ║
+║        Voice Mode: ws://localhost:${PORT}/ws/realtime         ║
+║                                                            ║
 ║        Pages:                                              ║
 ║        • Home:          http://localhost:${PORT}/             ║
-║        • Super Admin:   http://localhost:${PORT}/super-admin  ║
-║        • Organizations: http://localhost:${PORT}/organizations║
 ║        • Interview:     http://localhost:${PORT}/interview    ║
 ║        • Candidate:     http://localhost:${PORT}/candidate    ║
 ║                                                            ║
 ║        OpenAI: ${process.env.OPENAI_API_KEY ? '✓ Configured' : '✗ Not configured'}                              ║
-║                                                            ║
-║        Available Interview Roles:                          ║
-║        • Senior Software Developer                         ║
-║        • Data Scientist                                    ║
-║        • Product Manager                                   ║
-║        • DevOps Engineer                                   ║
-║        • Frontend Developer                                ║
+║        Security: Helmet ✓ | Rate Limit: 100/15min         ║
 ║                                                            ║
 ╚════════════════════════════════════════════════════════════╝
         `);
