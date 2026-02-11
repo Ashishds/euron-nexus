@@ -580,9 +580,9 @@ IMPORTANT: Reference their specific projects and skills naturally during the int
                     },
                     turn_detection: {
                         type: 'server_vad',
-                        threshold: 0.6,
-                        prefix_padding_ms: 300,
-                        silence_duration_ms: 1000,
+                        threshold: 0.8,
+                        prefix_padding_ms: 500,
+                        silence_duration_ms: 1500,
                         create_response: true
                     }
                 }

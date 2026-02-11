@@ -531,11 +531,6 @@
         let currentAiMessageContent = '';
 
         function addMessage(content, isUser = false, label = null, customId = null) {
-            if (isUser) {
-                currentAiMessageId = null;
-                currentAiMessageContent = '';
-            }
-
             const messageDiv = document.createElement('div');
             if (customId) messageDiv.id = customId;
             messageDiv.className = `flex items-start space-x-3 fade-in ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
@@ -604,12 +599,13 @@
         let audioContext = null;
         let ws = null;
         let isVoiceActive = false;
-        let micStream = null;        // MediaStream from getUserMedia
-        let micSource = null;        // MediaStreamSource node
-        let micProcessor = null;     // ScriptProcessor node
+        let micStream = null;
+        let micSource = null;
+        let micProcessor = null;
         let audioQueue = [];
         let isPlaying = false;
         let currentSource = null;
+        let isAiSpeaking = false;    // True while AI audio is playing
 
         // Initialize Audio Context
         async function initAudio() {
@@ -650,9 +646,20 @@
                                 if (data.delta) updateAiMessage(data.delta);
                                 break;
 
-                            // AI response finished — finalize message bubble
+                            // AI response transcript finished
                             case 'response.audio_transcript.done':
                                 finalizeAiMessage();
+                                break;
+
+                            // Entire response finished
+                            case 'response.done':
+                                finalizeAiMessage();
+                                break;
+
+                            // USER started speaking — interrupt AI immediately
+                            case 'input_audio_buffer.speech_started':
+                                console.log('🗣️ User started speaking — interrupting AI');
+                                interruptAiPlayback();
                                 break;
 
                             // User speech transcript
@@ -677,7 +684,6 @@
                                 break;
 
                             default:
-                                // Ignore other event types (rate_limits.updated, etc.)
                                 break;
                         }
                     } catch (parseErr) {
@@ -705,14 +711,30 @@
             if (!isPlaying) playNextInQueue();
         }
 
+        // Interrupt AI: stop audio and clear queue
+        function interruptAiPlayback() {
+            audioQueue = [];
+            if (currentSource) {
+                try { currentSource.stop(); } catch (e) { }
+                currentSource = null;
+            }
+            isPlaying = false;
+            isAiSpeaking = false;
+            document.getElementById('aiSpeakingIndicator').classList.add('hidden');
+            // Finalize any partial AI message
+            finalizeAiMessage();
+        }
+
         async function playNextInQueue() {
             if (audioQueue.length === 0) {
                 isPlaying = false;
+                isAiSpeaking = false;
                 document.getElementById('aiSpeakingIndicator').classList.add('hidden');
                 return;
             }
 
             isPlaying = true;
+            isAiSpeaking = true;
             document.getElementById('aiSpeakingIndicator').classList.remove('hidden');
 
             const base64 = audioQueue.shift();
@@ -740,7 +762,7 @@
                 currentSource.start();
             } catch (err) {
                 console.error('Audio playback error:', err);
-                playNextInQueue(); // Skip bad chunk
+                playNextInQueue();
             }
         }
 
@@ -767,6 +789,8 @@
 
             micProcessor.onaudioprocess = (e) => {
                 if (!ws || ws.readyState !== WebSocket.OPEN) return;
+                // Skip sending audio while AI is speaking to prevent echo feedback
+                if (isAiSpeaking) return;
 
                 const inputData = e.inputBuffer.getChannelData(0);
 
