@@ -231,19 +231,32 @@ app.post('/api/upload-resume', upload.single('resume'), async (req, res) => {
 
         if (ext === '.pdf') {
             const dataBuffer = fs.readFileSync(filePath);
-            const pdfData = await pdfParse(dataBuffer);
-            resumeText = pdfData.text;
+            try {
+                const pdfData = await pdfParse(dataBuffer);
+                resumeText = pdfData.text;
+            } catch (pdfError) {
+                console.error('❌ PDF Parse Error:', pdfError);
+                return res.status(400).json({ error: 'Failed to parse PDF file. Please try a different file.' });
+            }
         } else if (ext === '.docx' || ext === '.doc') {
-            const result = await mammoth.extractRawText({ path: filePath });
-            resumeText = result.value;
+            try {
+                const result = await mammoth.extractRawText({ path: filePath });
+                resumeText = result.value;
+            } catch (docxError) {
+                console.error('❌ DOCX Parse Error:', docxError);
+                return res.status(400).json({ error: 'Failed to parse Word document. Please try a different file.' });
+            }
         }
 
         // Clean up uploaded file
-        fs.unlinkSync(filePath);
+        try { fs.unlinkSync(filePath); } catch (e) { /* ignore cleanup error */ }
 
         if (!resumeText || resumeText.trim().length < 50) {
+            console.error('❌ Resume text too short:', resumeText ? resumeText.length : 0);
             return res.status(400).json({ error: 'Could not extract meaningful text from resume. Please ensure it is not a scanned image.' });
         }
+
+        console.log('✅ Resume processed successfully. Text length:', resumeText.length);
 
         res.json({
             success: true,
