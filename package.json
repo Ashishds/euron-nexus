@@ -1,7 +1,7 @@
 {
-    "name": "zoho",
+    "name": "AI Recruiter",
     "version": "1.0.0",
-    "description": "Zoho AI Interview Platform - Demo Version",
+    "description": "AI Recruiter AI Interview Platform - Demo Version",
     "main": "server.js",
     "scripts": {
         "start": "node server.js",
@@ -21,7 +21,6 @@
     "engines": {
         "node": ">=18.0.0"
     },
-    "author": "Zoho",
+    "author": "AI Recruiter",
     "license": "ISC"
 }
-```
