@@ -16,8 +16,7 @@
         "mammoth": "^1.11.0",
         "multer": "^2.0.2",
         "openai": "^4.28.0",
-        "pdf-parse": "^1.1.1",
-        "ws": "^8.19.0"
+        "pdf-parse": "^1.1.1"
     },
     "engines": {
         "node": ">=18.0.0"
@@ -25,3 +24,4 @@
     "author": "Zoho",
     "license": "ISC"
 }
+```

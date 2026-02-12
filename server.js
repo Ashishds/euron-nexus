@@ -10,7 +10,7 @@ const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const WebSocket = require('ws');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -518,126 +518,7 @@ app.get('/candidate', (req, res) => {
 
 // Start server (Only if running directly, not when imported by Vercel)
 if (require.main === module) {
-
-    // ============================================================
-    // OPENAI REALTIME VOICE API (WebSocket Relay) - LOCAL ONLY
-    // ============================================================
-
-    const server = http.createServer(app);
-    const wss = new WebSocket.Server({ server, path: '/ws/realtime' });
-
-    wss.on('connection', (clientWs, req) => {
-        console.log('\n🎙️  Client connected to Realtime Voice API');
-
-        // Parse query params for role and resume context
-        const url = new URL(req.url, `http://${req.headers.host}`);
-        const role = url.searchParams.get('role') || 'Senior Software Developer';
-        const resumeContextParam = url.searchParams.get('resumeContext');
-        let resumeContext = null;
-        try {
-            if (resumeContextParam) resumeContext = JSON.parse(decodeURIComponent(resumeContextParam));
-        } catch (e) { /* ignore parse errors */ }
-
-        // Connect to OpenAI Realtime API
-        const openaiWs = new WebSocket('wss://api.openai.com/v1/realtime?model=gpt-4o-mini-realtime-preview', {
-            headers: {
-                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-                'OpenAI-Beta': 'realtime=v1'
-            }
-        });
-
-        openaiWs.on('open', () => {
-            console.log('✅ Connected to OpenAI Realtime API');
-
-            // Build system instructions with role and resume context
-            const roleConfig = ROLE_PROMPTS[role] || ROLE_PROMPTS['default'];
-            let instructions = BASE_SYSTEM_PROMPT.replace(/{{ROLE}}/g, roleConfig.role || role);
-
-            if (resumeContext) {
-                const resumeSection = `
-RESUME CONTEXT (Use this to ask personalized questions):
-- Candidate: ${resumeContext.candidate_name || 'Unknown'}
-- Key Skills: ${resumeContext.skills ? resumeContext.skills.join(', ') : 'Not available'}
-- Projects: ${resumeContext.key_projects ? resumeContext.key_projects.map(p => p.name).join(', ') : 'Not available'}
-- Areas to Probe: ${resumeContext.areas_to_probe ? resumeContext.areas_to_probe.join(', ') : 'None'}
-IMPORTANT: Reference their specific projects and skills naturally during the interview.`;
-                instructions = instructions.replace('{{RESUME_CONTEXT}}', resumeSection);
-            } else {
-                instructions = instructions.replace('{{RESUME_CONTEXT}}', '');
-            }
-
-            // Configure the Realtime session
-            const sessionConfig = {
-                type: 'session.update',
-                session: {
-                    modalities: ['text', 'audio'],
-                    instructions: instructions,
-                    voice: 'alloy',
-                    input_audio_format: 'pcm16',
-                    output_audio_format: 'pcm16',
-                    input_audio_transcription: {
-                        model: 'whisper-1'
-                    },
-                    turn_detection: {
-                        type: 'server_vad',
-                        threshold: 0.8,
-                        prefix_padding_ms: 500,
-                        silence_duration_ms: 1500,
-                        create_response: true
-                    }
-                }
-            };
-
-            openaiWs.send(JSON.stringify(sessionConfig));
-            console.log(`🎯 Session configured for role: ${role}, voice: alloy`);
-        });
-
-        // Relay: OpenAI → Client
-        openaiWs.on('message', (data) => {
-            try {
-                if (clientWs.readyState === WebSocket.OPEN) {
-                    clientWs.send(data.toString());
-                }
-            } catch (e) {
-                console.error('Error relaying to client:', e.message);
-            }
-        });
-
-        // Relay: Client → OpenAI
-        clientWs.on('message', (data) => {
-            try {
-                if (openaiWs.readyState === WebSocket.OPEN) {
-                    openaiWs.send(data.toString());
-                }
-            } catch (e) {
-                console.error('Error relaying to OpenAI:', e.message);
-            }
-        });
-
-        // Handle disconnections
-        clientWs.on('close', () => {
-            console.log('🔌 Client disconnected');
-            if (openaiWs.readyState === WebSocket.OPEN) openaiWs.close();
-        });
-
-        openaiWs.on('close', () => {
-            console.log('🔌 OpenAI Realtime disconnected');
-            if (clientWs.readyState === WebSocket.OPEN) clientWs.close();
-        });
-
-        openaiWs.on('error', (err) => {
-            console.error('❌ OpenAI Realtime error:', err.message);
-            if (clientWs.readyState === WebSocket.OPEN) {
-                clientWs.send(JSON.stringify({ type: 'error', error: { message: 'OpenAI Realtime connection failed: ' + err.message } }));
-            }
-        });
-
-        clientWs.on('error', (err) => {
-            console.error('❌ Client WebSocket error:', err.message);
-        });
-    });
-
-    server.listen(PORT, () => {
+    app.listen(PORT, () => {
         console.log(`
 ╔════════════════════════════════════════════════════════════╗
 ║                                                            ║
@@ -648,12 +529,9 @@ IMPORTANT: Reference their specific projects and skills naturally during the int
 ║                                                            ║
 ║        AI Agents:                                          ║
 ║        • Agent 1: Resume Analyzer   (GPT-4o-mini)          ║
-║        • Agent 2: Interviewer       (GPT-4o)               ║
+║        • Agent 2: Interviewer       (GPT-4o-mini)          ║
 ║        • Agent 3: Evaluator         (GPT-4o-mini)          ║
-║        • Voice:   Realtime API      (GPT-4o-realtime)      ║
-║        • Note:    Voice Mode is LOCAL ONLY                 ║
-║                                                            ║
-║        Voice Mode: ws://localhost:${PORT}/ws/realtime         ║
+║        • Voice:   Browser STT/TTS   (Free & Vercel Ready)  ║
 ║                                                            ║
 ║        Pages:                                              ║
 ║        • Home:          http://localhost:${PORT}/             ║
