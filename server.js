@@ -365,9 +365,9 @@ IMPORTANT: Use the resume context naturally. Reference their specific projects/s
             ...messages
         ];
 
-        // Agent 2: Interviewer — uses gpt-4o (best quality for real-time interview conversation)
+        // Agent 2: Interviewer — uses gpt-4o-mini (cost-effective)
         const completion = await openai.chat.completions.create({
-            model: 'gpt-4o',
+            model: 'gpt-4o-mini',
             messages: conversationMessages,
             max_tokens: 300,
             temperature: 0.7
@@ -539,7 +539,7 @@ if (require.main === module) {
         } catch (e) { /* ignore parse errors */ }
 
         // Connect to OpenAI Realtime API
-        const openaiWs = new WebSocket('wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview', {
+        const openaiWs = new WebSocket('wss://api.openai.com/v1/realtime?model=gpt-4o-mini-realtime-preview', {
             headers: {
                 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
                 'OpenAI-Beta': 'realtime=v1'
