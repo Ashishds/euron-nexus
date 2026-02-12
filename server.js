@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const http = require('http');
 const OpenAI = require('openai');
 const multer = require('multer');
@@ -41,7 +42,7 @@ app.use('/api/', apiLimiter);
 // ============================================================
 // FILE UPLOAD CONFIG (Resume)
 // ============================================================
-const uploadDir = path.join(__dirname, 'uploads');
+const uploadDir = path.join(os.tmpdir(), 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
 const storage = multer.diskStorage({
@@ -71,7 +72,7 @@ const upload = multer({
 // ============================================================
 
 // AGENT 1: RESUME ANALYZER AGENT
-const RESUME_ANALYZER_PROMPT = `You are a Resume Analysis Agent for Zoho AI Interview Platform.
+const RESUME_ANALYZER_PROMPT = `You are a Resume Analysis Agent for AI Recruiter AI Interview Platform.
 Your job is to deeply analyze a candidate's resume and extract structured information that will help the Interviewer Agent ask targeted, personalized questions.
 
 ANALYSIS REQUIREMENTS:
@@ -104,11 +105,11 @@ OUTPUT FORMAT (JSON Only):
 }`;
 
 // AGENT 2: INTERVIEWER AGENT (Enhanced with Resume Context)
-const BASE_SYSTEM_PROMPT = `You are "Zoho", an expert AI interviewer working for Engagesphere Technology.
+const BASE_SYSTEM_PROMPT = `You are "AI Recruiter", an expert AI interviewer working for Engagesphere Technology.
 Your goal is to conduct a professional, structured, and insightful interview for the {{ROLE}} position.
 
 CORE IDENTITY & STYLE:
-- Name: Zoho
+- Name: AI Recruiter
 - Tone: Professional, warm, encouraging, but concise.
 - Style: Structured yet conversational. adaptive.
 - Length: Responses MUST use efficient wording (aim for <60 words unless explaining a complex concept).
@@ -141,33 +142,33 @@ You are the interviewer. You lead the conversation. Do not be passive.
 
 const ROLE_PROMPTS = {
     'Senior Software Developer': {
-        greeting: "Hello, welcome to Zoho. I'm Zoho, and I'll be conducting your Senior Software Developer interview today. To get us started, could you briefly introduce yourself and tell me about the most complex system you've built recently?",
+        greeting: "Hello, welcome to AI Recruiter. I'm AI Recruiter, and I'll be conducting your Senior Software Developer interview today. To get us started, could you briefly introduce yourself and tell me about the most complex system you've built recently?",
         role: "Senior Software Developer"
     },
     'Data Scientist': {
-        greeting: "Hello, welcome to Zoho. I'm Zoho. I'm looking forward to discussing your background in Data Science. To kick things off, could you walk me through a machine learning project you deployed to production?",
+        greeting: "Hello, welcome to AI Recruiter. I'm AI Recruiter. I'm looking forward to discussing your background in Data Science. To kick things off, could you walk me through a machine learning project you deployed to production?",
         role: "Data Scientist"
     },
     'Product Manager': {
-        greeting: "Hi, welcome to Zoho. I'm Zoho. I'm excited to hear about your product journey. Could you start by telling me about a product you launched that didn't go as planned, and what you learned from it?",
+        greeting: "Hi, welcome to AI Recruiter. I'm AI Recruiter. I'm excited to hear about your product journey. Could you start by telling me about a product you launched that didn't go as planned, and what you learned from it?",
         role: "Product Manager"
     },
     'DevOps Engineer': {
-        greeting: "Hello, welcome to Zoho. I'm Zoho, your AI interviewer. I'd love to hear about your experience with infrastructure. Can you describe a time you automated a manual process that saved significant team effort?",
+        greeting: "Hello, welcome to AI Recruiter. I'm AI Recruiter, your AI interviewer. I'd love to hear about your experience with infrastructure. Can you describe a time you automated a manual process that saved significant team effort?",
         role: "DevOps Engineer"
     },
     'Frontend Developer': {
-        greeting: "Hi there, welcome to Zoho. I'm Zoho. I'm keen to see your approach to UI/UX. To start, can you tell me about a particularly challenging user interface problem you solved recently?",
+        greeting: "Hi there, welcome to AI Recruiter. I'm AI Recruiter. I'm keen to see your approach to UI/UX. To start, can you tell me about a particularly challenging user interface problem you solved recently?",
         role: "Frontend Developer"
     },
     'default': {
-        greeting: "Hello, welcome to Zoho. I'm Zoho. I'm looking forward to learning more about you. Could you please start by giving me a brief overview of your professional background?",
+        greeting: "Hello, welcome to AI Recruiter. I'm AI Recruiter. I'm looking forward to learning more about you. Could you please start by giving me a brief overview of your professional background?",
         role: "Candidate"
     }
 };
 
 // AGENT 3: EVALUATION AGENT (Enhanced with Resume Verification)
-const EVALUATION_AGENT_PROMPT = `You are an Interview Evaluation Agent for Zoho.
+const EVALUATION_AGENT_PROMPT = `You are an Interview Evaluation Agent for AI Recruiter.
 Your goal is to provide a transparent, constructive, and comprehensive evaluation of the candidate's performance.
 
 CRITERIA:
@@ -333,7 +334,7 @@ app.post('/api/chat', async (req, res) => {
         if (!messages || messages.length === 0) {
             // If resume context exists, personalize the greeting
             if (resumeContext && resumeContext.candidate_name) {
-                const personalGreeting = `Hello ${resumeContext.candidate_name}, welcome to Zoho. I'm Zoho, and I'll be conducting your ${roleConfig.role} interview today. I've reviewed your resume — I can see you have experience with ${resumeContext.skills ? resumeContext.skills.slice(0, 3).join(', ') : 'relevant technologies'}. Let's dive in! Could you start by giving me a brief overview of your career journey?`;
+                const personalGreeting = `Hello ${resumeContext.candidate_name}, welcome to AI Recruiter. I'm AI Recruiter, and I'll be conducting your ${roleConfig.role} interview today. I've reviewed your resume — I can see you have experience with ${resumeContext.skills ? resumeContext.skills.slice(0, 3).join(', ') : 'relevant technologies'}. Let's dive in! Could you start by giving me a brief overview of your career journey?`;
                 return res.json({ response: personalGreeting });
             }
             return res.json({ response: roleConfig.greeting });
@@ -522,7 +523,7 @@ if (require.main === module) {
         console.log(`
 ╔════════════════════════════════════════════════════════════╗
 ║                                                            ║
-║        🚀 ZOHO - AI Interview Platform                     ║
+║        🚀 AI Recruiter - AI Interview Platform                     ║
 ║        🤖 Multi-Agent Architecture v3.0                    ║
 ║                                                            ║
 ║        Server running at: http://localhost:${PORT}            ║
