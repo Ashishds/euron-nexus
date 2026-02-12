@@ -539,7 +539,7 @@ if (require.main === module) {
         } catch (e) { /* ignore parse errors */ }
 
         // Connect to OpenAI Realtime API
-        const openaiWs = new WebSocket('wss://api.openai.com/v1/realtime?model=gpt-4o-mini-realtime-preview', {
+        const openaiWs = new WebSocket('wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview', {
             headers: {
                 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
                 'OpenAI-Beta': 'realtime=v1'
