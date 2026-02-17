@@ -734,27 +734,7 @@
         }
 
         // Camera Preview
-        document.getElementById('videoBtn').addEventListener('click', async () => {
-            // Simple toggle logic or just start logic
-            const videoEl = document.getElementById('localVideo');
-            const placeholder = document.getElementById('cameraPlaceholder');
-            if (!videoEl.classList.contains('hidden')) {
-                // Stop
-                const stream = videoEl.srcObject;
-                if (stream) stream.getTracks().forEach(t => t.stop());
-                videoEl.srcObject = null;
-                videoEl.classList.add('hidden');
-                placeholder.classList.remove('hidden');
-            } else {
-                // Start
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                    videoEl.srcObject = stream;
-                    videoEl.classList.remove('hidden');
-                    placeholder.classList.add('hidden');
-                } catch (e) { alert('Camera access denied'); }
-            }
-        });
+
 
         // Timer
         function updateTimer() {
@@ -851,6 +831,15 @@
         // ============================================================
         // BUTTON EVENT LISTENERS
         // ============================================================
+
+        // Start Interview
+        document.getElementById('startInterviewBtn').addEventListener('click', startInterview);
+
+        // Skip Resume
+        document.getElementById('skipResumeBtn')?.addEventListener('click', () => {
+            document.getElementById('resumePanel').classList.add('hidden');
+            startInterview();
+        });
 
         // Mic toggle
         document.getElementById('micBtn').addEventListener('click', () => {
