@@ -187,3 +187,4 @@ npm start
 ```
 
 **That's it! No API keys, no .env file, no database setup needed for the demo!** 🎉
+

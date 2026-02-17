@@ -334,7 +334,7 @@ app.post('/api/chat', async (req, res) => {
         if (!messages || messages.length === 0) {
             // If resume context exists, personalize the greeting
             if (resumeContext && resumeContext.candidate_name) {
-                const personalGreeting = `Hello ${resumeContext.candidate_name}, welcome to AI Recruiter. I'm AI Recruiter, and I'll be conducting your ${roleConfig.role} interview today. I've reviewed your resume — I can see you have experience with ${resumeContext.skills ? resumeContext.skills.slice(0, 3).join(', ') : 'relevant technologies'}. Let's dive in! Could you start by giving me a brief overview of your career journey?`;
+                const personalGreeting = `Hello ${resumeContext.candidate_name}, welcome to AI Recruiter. I see you have experience with ${resumeContext.skills ? resumeContext.skills.slice(0, 3).join(', ') : 'technologies relevant to this role'}. Let's get started. Could you briefly introduce yourself?`;
                 return res.json({ response: personalGreeting });
             }
             return res.json({ response: roleConfig.greeting });

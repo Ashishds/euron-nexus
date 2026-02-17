@@ -1,6 +1,6 @@
-# Zoho - AI Interview Platform
+# AI Recruiter - AI Interview Platform
 
-![Zoho Logo](https://img.shields.io/badge/Zoho-AI-0A66C2?style=for-the-badge&logo=lightning&logoColor=white)
+![AI Recruiter Logo](https://img.shields.io/badge/AI Recruiter-AI-0A66C2?style=for-the-badge&logo=lightning&logoColor=white)
 
 A next-generation AI-powered interview platform that automates end-to-end hiring with intelligent resume screening, AI-driven interviews, and comprehensive analytics.
 
@@ -25,7 +25,7 @@ The application will be available at **http://localhost:3000**
 ## 📁 Project Structure
 
 ```
-zoho/
+AI Recruiter/
 ├── public/
 │   ├── index.html          # Landing page
 │   ├── super-admin.html    # Super Admin Dashboard
@@ -86,7 +86,7 @@ The UI follows a professional, enterprise-grade design inspired by LinkedIn's UX
    ```bash
    # On your EC2 instance
    git clone <your-repo>
-   cd zoho
+   cd AI Recruiter
    npm install
    npm start
    ```
@@ -94,7 +94,7 @@ The UI follows a professional, enterprise-grade design inspired by LinkedIn's UX
 2. **With PM2 (Production)**:
    ```bash
    npm install -g pm2
-   pm2 start server.js --name zoho
+   pm2 start server.js --name AI Recruiter
    pm2 save
    ```
 
@@ -144,4 +144,5 @@ For any questions or issues, contact the development team.
 
 ---
 
-**Built with ❤️ by Zoho**
+**Built with ❤️ by AI Recruiter**
+
