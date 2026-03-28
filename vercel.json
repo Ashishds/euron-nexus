@@ -1,17 +1,22 @@
 {
-    "version": 2,
-    "rewrites": [
-        {
-            "source": "/HireAI/api/:path*",
-            "destination": "http://3.109.182.160:8000/api/:path*"
-        },
-        {
-            "source": "/HireAI/:path*",
-            "destination": "http://3.109.182.160:3000/HireAI/:path*"
-        },
-        {
-            "source": "/(.*)",
-            "destination": "/server.js"
-        }
-    ]
+  "version": 2,
+  "trailingSlash": true,
+  "rewrites": [
+    {
+      "source": "/HireAI/api/:path*/",
+      "destination": "http://3.109.182.160:8000/api/:path*/"
+    },
+    {
+      "source": "/HireAI/api/:path*",
+      "destination": "http://3.109.182.160:8000/api/:path*"
+    },
+    {
+      "source": "/HireAI/:path*/",
+      "destination": "http://3.109.182.160:3000/HireAI/:path*/"
+    },
+    {
+      "source": "/HireAI/:path*",
+      "destination": "http://3.109.182.160:3000/HireAI/:path*"
+    }
+  ]
 }
